@@ -15,7 +15,7 @@
           <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2">
             <span>⚾</span> Practice Drill Series Tracker
           </h1>
-          <p class="text-slate-400 text-sm mt-1">Manage practice flow, auto-advancing segments, and coach responsibilities.</p>
+          <p class="text-slate-400 text-sm mt-1">Active segment automatically rises to the top.</p>
         </div>
 
         <!-- Practice Segment Timer Box -->
@@ -39,7 +39,7 @@
           
           <div class="flex items-center justify-between w-full mt-3 pt-2 border-t border-slate-800/80 text-xs text-slate-400">
             <button onclick="changeDrillSegment(-1)" class="hover:text-white">&larr; Prev Drill</button>
-            <span id="current-drill-indicator" class="font-semibold text-slate-200">Drill 1 of 12</span>
+            <span id="current-drill-indicator" class="font-semibold text-slate-200">Segment 1 of 12</span>
             <button onclick="changeDrillSegment(1)" class="hover:text-white">Next Drill &rarr;</button>
           </div>
         </div>
@@ -62,26 +62,40 @@
   </div>
 
   <script>
-    let drillData = [];
-    let currentDrillIndex = 0;
+    let originalDrills = [];
     let timerInterval = null;
     let customSegmentMins = 5;
-    let totalSeconds = 300; // 5 mins default
+    let totalSeconds = 300; 
     let isRunning = false;
+    let currentActiveIndex = 0; // Tracks position in the reordered list
 
     async function loadData() {
       const response = await fetch('data.json');
       const data = await response.json();
-      drillData = data.drills;
-      renderDrills(drillData);
+      // Tag each drill block with its original ID index
+      originalDrills = data.drills.map((d, index) => ({ ...d, originalIndex: index }));
+      renderDrills('All');
       updateTimerDisplay();
     }
 
-    function renderDrills(drills, filterCoach = 'All') {
+    function getOrderedDrills() {
+      // Reorder array so the currently active drill is at index 0, 
+      // followed by subsequent drills, wrapping completed ones to the bottom.
+      let ordered = [];
+      for (let i = 0; i < originalDrills.length; i++) {
+        let idx = (currentActiveIndex + i) % originalDrills.length;
+        ordered.push(originalDrills[idx]);
+      }
+      return ordered;
+    }
+
+    function renderDrills(filterCoach = 'All') {
       const container = document.getElementById('drills-container');
       container.innerHTML = '';
 
-      drills.forEach((drillBlock, blockIdx) => {
+      const orderedDrills = getOrderedDrills();
+
+      orderedDrills.forEach((drillBlock, listPosition) => {
         const filteredTasks = drillBlock.tasks.filter(t => {
           if (filterCoach === 'All') return true;
           return t.coach.toLowerCase().includes(filterCoach.toLowerCase());
@@ -89,8 +103,11 @@
 
         if (filteredTasks.length === 0) return;
 
+        // The first item in the reordered list is always the active segment
+        const isActive = (listPosition === 0);
+
         const card = document.createElement('div');
-        card.className = `bg-slate-900 border rounded-2xl shadow-lg p-5 transition ${currentDrillIndex === blockIdx ? 'border-emerald-500 ring-1 ring-emerald-500/50' : 'border-slate-800'}`;
+        card.className = `bg-slate-900 border rounded-2xl shadow-lg p-5 transition ${isActive ? 'border-emerald-500 ring-2 ring-emerald-500/40 bg-slate-900/90' : 'border-slate-800 opacity-75'}`;
 
         let tasksHtml = filteredTasks.map((t, idx) => `
           <div class="flex items-start justify-between py-3.5 ${idx !== filteredTasks.length - 1 ? 'border-b border-slate-800' : ''}">
@@ -114,9 +131,11 @@
         `).join('');
 
         card.innerHTML = `
-          <div class="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-800 cursor-pointer" onclick="jumpToDrill(${blockIdx})">
-            <h3 class="text-lg font-bold text-emerald-400 tracking-wide">Drill ${drillBlock.drillNumber} ${currentDrillIndex === blockIdx ? '(Active Segment)' : ''}</h3>
-            <span class="text-xs text-slate-400 hover:text-white">Click to select</span>
+          <div class="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-800 cursor-pointer" onclick="jumpToDrill(${drillBlock.originalIndex})">
+            <h3 class="text-lg font-bold ${isActive ? 'text-emerald-400' : 'text-slate-300'} tracking-wide">
+              Drill ${drillBlock.drillNumber} ${isActive ? '⭐ (ACTIVE SEGMENT)' : ''}
+            </h3>
+            <span class="text-xs text-slate-400 hover:text-white">Click to make active</span>
           </div>
           <div class="divide-y divide-slate-800">
             ${tasksHtml}
@@ -128,13 +147,15 @@
 
     function filterDrills(coachName) {
       document.querySelectorAll('.filter-btn').forEach(btn => {
-        if(btn.textContent.includes(coachName) || (coachName === 'All' && btn.textContent === 'All Drills')) {
+        let matches = (coachName === 'All' && btn.textContent === 'All Drills') || btn.textContent.includes(coachName);
+        if(matches) {
           btn.className = 'filter-btn bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow hover:bg-emerald-500 transition';
         } else {
           btn.className = 'filter-btn bg-slate-900 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition';
         }
       });
-      renderDrills(drillData, coachName);
+      let filterVal = coachName === 'All' ? 'All' : coachName;
+      renderDrills(filterVal);
     }
 
     // --- Timer Functions ---
@@ -144,10 +165,10 @@
       document.getElementById('timer-display').textContent = 
         `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
       
-      if(drillData.length > 0) {
-        const currentDrillNum = drillData[currentDrillIndex].drillNumber;
-        document.getElementById('timer-title').textContent = `Drill ${currentDrillNum} Segment Timer`;
-        document.getElementById('current-drill-indicator').textContent = `Drill ${currentDrillIndex + 1} of ${drillData.length}`;
+      if(originalDrills.length > 0) {
+        const activeDrill = getOrderedDrills()[0];
+        document.getElementById('timer-title').textContent = `Drill ${activeDrill.drillNumber} Segment Timer`;
+        document.getElementById('current-drill-indicator').textContent = `Segment ${(currentActiveIndex % originalDrills.length) + 1} of ${originalDrills.length}`;
       }
     }
 
@@ -157,11 +178,10 @@
       customSegmentMins = parsed;
       totalSeconds = customSegmentMins * 60;
       updateTimerDisplay();
-      // Re-render to update badges
+      
       const activeBtn = document.querySelector('.filter-btn.bg-emerald-600');
-      let currentFilter = 'All';
-      if (activeBtn) currentFilter = activeBtn.textContent.replace('All Drills', 'All');
-      renderDrills(drillData, currentFilter);
+      let currentFilter = activeBtn ? (activeBtn.textContent.includes('All') ? 'All' : activeBtn.textContent) : 'All';
+      renderDrills(currentFilter);
     }
 
     function toggleTimer() {
@@ -180,7 +200,7 @@
             totalSeconds--;
             updateTimerDisplay();
           } else {
-            // Timer expired -> Auto Advance to Next Drill & keep running!
+            // Timer expired -> Shift to bottom, next drill rises to top, keep running!
             advanceToNextSegment();
           }
         }, 1000);
@@ -188,24 +208,22 @@
     }
 
     function advanceToNextSegment() {
-      currentDrillIndex++;
-      if (currentDrillIndex >= drillData.length) {
-        // Practice finished! Stop timer
+      currentActiveIndex++;
+      if (currentActiveIndex >= originalDrills.length) {
         clearInterval(timerInterval);
         isRunning = false;
-        currentDrillIndex = 0;
+        currentActiveIndex = 0;
         document.getElementById('start-pause-btn').textContent = 'Start';
         document.getElementById('start-pause-btn').className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
         alert('Practice Drill Series Completed!');
       } else {
-        // Reset to full segment length for the next drill and keep running automatically
         totalSeconds = customSegmentMins * 60;
       }
       updateTimerDisplay();
+      
       const activeBtn = document.querySelector('.filter-btn.bg-emerald-600');
-      let currentFilter = 'All';
-      if (activeBtn && !activeBtn.textContent.includes('All')) currentFilter = activeBtn.textContent;
-      renderDrills(drillData, currentFilter);
+      let currentFilter = activeBtn ? (activeBtn.textContent.includes('All') ? 'All' : activeBtn.textContent) : 'All';
+      renderDrills(currentFilter);
     }
 
     function resetTimer() {
@@ -224,27 +242,24 @@
     }
 
     function changeDrillSegment(direction) {
-      currentDrillIndex += direction;
-      if (currentDrillIndex < 0) currentDrillIndex = drillData.length - 1;
-      if (currentDrillIndex >= drillData.length) currentDrillIndex = 0;
-      
+      currentActiveIndex = (currentActiveIndex + direction + originalDrills.length) % originalDrills.length;
       totalSeconds = customSegmentMins * 60;
       updateTimerDisplay();
       
       const activeBtn = document.querySelector('.filter-btn.bg-emerald-600');
-      let currentFilter = 'All';
-      if (activeBtn && !activeBtn.textContent.includes('All')) currentFilter = activeBtn.textContent;
-      renderDrills(drillData, currentFilter);
+      let currentFilter = activeBtn ? (activeBtn.textContent.includes('All') ? 'All' : activeBtn.textContent) : 'All';
+      renderDrills(currentFilter);
     }
 
-    function jumpToDrill(index) {
-      currentDrillIndex = index;
+    function jumpToDrill(originalIndex) {
+      // Find the position in originalDrills that matches this originalIndex
+      currentActiveIndex = originalIndex;
       totalSeconds = customSegmentMins * 60;
       updateTimerDisplay();
+      
       const activeBtn = document.querySelector('.filter-btn.bg-emerald-600');
-      let currentFilter = 'All';
-      if (activeBtn && !activeBtn.textContent.includes('All')) currentFilter = activeBtn.textContent;
-      renderDrills(drillData, currentFilter);
+      let currentFilter = activeBtn ? (activeBtn.textContent.includes('All') ? 'All' : activeBtn.textContent) : 'All';
+      renderDrills(currentFilter);
     }
 
     loadData();
