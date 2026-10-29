@@ -15,7 +15,7 @@
           <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2">
             <span>⚾</span> Practice Drill Series Tracker
           </h1>
-          <p class="text-slate-400 text-sm mt-1">Active segment automatically rises to the top.</p>
+          <p class="text-slate-400 text-sm mt-1">Active segment rises to the top with a 10-second warning alert.</p>
         </div>
 
         <!-- Practice Segment Timer Box -->
@@ -67,20 +67,53 @@
     let customSegmentMins = 5;
     let totalSeconds = 300; 
     let isRunning = false;
-    let currentActiveIndex = 0; // Tracks position in the reordered list
+    let currentActiveIndex = 0; 
+    let audioCtx = null;
+
+    // Initialize Web Audio API on first user interaction to bypass mobile browser audio restrictions
+    function playAlertSound(type = 'warning') {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'warning') {
+          // 10-second warning beep (short double beep)
+          osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.2);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.2);
+        } else {
+          // Segment change beep (longer triple beep)
+          osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5 note
+          gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.5);
+        }
+      } catch (e) {
+        console.log("Audio play error:", e);
+      }
+    }
 
     async function loadData() {
       const response = await fetch('data.json');
       const data = await response.json();
-      // Tag each drill block with its original ID index
       originalDrills = data.drills.map((d, index) => ({ ...d, originalIndex: index }));
       renderDrills('All');
       updateTimerDisplay();
     }
 
     function getOrderedDrills() {
-      // Reorder array so the currently active drill is at index 0, 
-      // followed by subsequent drills, wrapping completed ones to the bottom.
       let ordered = [];
       for (let i = 0; i < originalDrills.length; i++) {
         let idx = (currentActiveIndex + i) % originalDrills.length;
@@ -103,7 +136,6 @@
 
         if (filteredTasks.length === 0) return;
 
-        // The first item in the reordered list is always the active segment
         const isActive = (listPosition === 0);
 
         const card = document.createElement('div');
@@ -158,13 +190,19 @@
       renderDrills(filterVal);
     }
 
-    // --- Timer Functions ---
     function updateTimerDisplay() {
       const minutes = Math.floor(totalSeconds / 60);
       const seconds = totalSeconds % 60;
-      document.getElementById('timer-display').textContent = 
-        `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      const displayElem = document.getElementById('timer-display');
+      displayElem.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
       
+      // Flash red when 10 seconds or under remain
+      if (totalSeconds <= 10 && totalSeconds > 0) {
+        displayElem.className = 'text-4xl font-mono font-black text-rose-500 tracking-widest my-1 animate-pulse';
+      } else {
+        displayElem.className = 'text-4xl font-mono font-black text-white tracking-widest my-1';
+      }
+
       if(originalDrills.length > 0) {
         const activeDrill = getOrderedDrills()[0];
         document.getElementById('timer-title').textContent = `Drill ${activeDrill.drillNumber} Segment Timer`;
@@ -198,9 +236,13 @@
         timerInterval = setInterval(() => {
           if (totalSeconds > 0) {
             totalSeconds--;
+            // Trigger alert sound exactly at 10 seconds remaining
+            if (totalSeconds === 10) {
+              playAlertSound('warning');
+            }
             updateTimerDisplay();
           } else {
-            // Timer expired -> Shift to bottom, next drill rises to top, keep running!
+            playAlertSound('complete');
             advanceToNextSegment();
           }
         }, 1000);
@@ -252,7 +294,6 @@
     }
 
     function jumpToDrill(originalIndex) {
-      // Find the position in originalDrills that matches this originalIndex
       currentActiveIndex = originalIndex;
       totalSeconds = customSegmentMins * 60;
       updateTimerDisplay();
