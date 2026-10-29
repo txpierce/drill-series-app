@@ -15,15 +15,22 @@
           <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2">
             <span>⚾</span> Practice Drill Series Tracker
           </h1>
-          <p class="text-slate-400 text-sm mt-1">Manage practice flow, live segments, and coach responsibilities.</p>
+          <p class="text-slate-400 text-sm mt-1">Manage practice flow, auto-advancing segments, and coach responsibilities.</p>
         </div>
 
         <!-- Practice Segment Timer Box -->
-        <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[280px]">
+        <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[300px]">
           <div class="text-xs uppercase tracking-wider text-emerald-400 font-bold mb-1" id="timer-title">Drill 1 Segment Timer</div>
           <div class="text-4xl font-mono font-black text-white tracking-widest my-1" id="timer-display">05:00</div>
           
-          <div class="flex items-center gap-2 mt-2 w-full justify-center">
+          <!-- Segment Duration Input -->
+          <div class="flex items-center gap-2 my-2 text-xs text-slate-300">
+            <span>Segment Length:</span>
+            <input type="number" id="segment-length-input" value="5" min="1" max="60" onchange="updateSegmentLength(this.value)" class="w-14 bg-slate-900 border border-slate-700 text-center font-bold text-white rounded px-1.5 py-0.5 focus:outline-none focus:border-emerald-500">
+            <span>mins</span>
+          </div>
+
+          <div class="flex items-center gap-2 mt-1 w-full justify-center">
             <button onclick="adjustTime(-1)" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded font-semibold text-slate-300">-1m</button>
             <button onclick="toggleTimer()" id="start-pause-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition">Start</button>
             <button onclick="resetTimer()" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded font-semibold text-slate-300">Reset</button>
@@ -58,7 +65,8 @@
     let drillData = [];
     let currentDrillIndex = 0;
     let timerInterval = null;
-    let totalSeconds = 300; // default 5 minutes
+    let customSegmentMins = 5;
+    let totalSeconds = 300; // 5 mins default
     let isRunning = false;
 
     async function loadData() {
@@ -73,7 +81,7 @@
       const container = document.getElementById('drills-container');
       container.innerHTML = '';
 
-      drills.forEach(drillBlock => {
+      drills.forEach((drillBlock, blockIdx) => {
         const filteredTasks = drillBlock.tasks.filter(t => {
           if (filterCoach === 'All') return true;
           return t.coach.toLowerCase().includes(filterCoach.toLowerCase());
@@ -82,7 +90,7 @@
         if (filteredTasks.length === 0) return;
 
         const card = document.createElement('div');
-        card.className = 'bg-slate-900 border border-slate-800 rounded-2xl shadow-lg p-5';
+        card.className = `bg-slate-900 border rounded-2xl shadow-lg p-5 transition ${currentDrillIndex === blockIdx ? 'border-emerald-500 ring-1 ring-emerald-500/50' : 'border-slate-800'}`;
 
         let tasksHtml = filteredTasks.map((t, idx) => `
           <div class="flex items-start justify-between py-3.5 ${idx !== filteredTasks.length - 1 ? 'border-b border-slate-800' : ''}">
@@ -95,7 +103,7 @@
                     <span class="text-xs text-emerald-400 font-semibold">Lead: ${t.coach}</span>
                   </div>
                   <span class="bg-slate-800/80 text-amber-400 border border-slate-700/60 text-xs font-mono font-bold px-2.5 py-0.5 rounded-md">
-                    ⏱️ ${t.segmentTime}
+                    ⏱️ ${customSegmentMins} mins
                   </span>
                 </div>
                 <h4 class="font-semibold text-slate-100 mt-1.5">${t.drill}</h4>
@@ -106,8 +114,9 @@
         `).join('');
 
         card.innerHTML = `
-          <div class="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-800">
-            <h3 class="text-lg font-bold text-emerald-400 tracking-wide">Drill ${drillBlock.drillNumber}</h3>
+          <div class="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-800 cursor-pointer" onclick="jumpToDrill(${blockIdx})">
+            <h3 class="text-lg font-bold text-emerald-400 tracking-wide">Drill ${drillBlock.drillNumber} ${currentDrillIndex === blockIdx ? '(Active Segment)' : ''}</h3>
+            <span class="text-xs text-slate-400 hover:text-white">Click to select</span>
           </div>
           <div class="divide-y divide-slate-800">
             ${tasksHtml}
@@ -142,6 +151,19 @@
       }
     }
 
+    function updateSegmentLength(val) {
+      let parsed = parseInt(val);
+      if (isNaN(parsed) || parsed < 1) parsed = 1;
+      customSegmentMins = parsed;
+      totalSeconds = customSegmentMins * 60;
+      updateTimerDisplay();
+      // Re-render to update badges
+      const activeBtn = document.querySelector('.filter-btn.bg-emerald-600');
+      let currentFilter = 'All';
+      if (activeBtn) currentFilter = activeBtn.textContent.replace('All Drills', 'All');
+      renderDrills(drillData, currentFilter);
+    }
+
     function toggleTimer() {
       const btn = document.getElementById('start-pause-btn');
       if (isRunning) {
@@ -158,20 +180,38 @@
             totalSeconds--;
             updateTimerDisplay();
           } else {
-            clearInterval(timerInterval);
-            isRunning = false;
-            btn.textContent = 'Start';
-            btn.className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
-            alert('Segment Time Completed!');
+            // Timer expired -> Auto Advance to Next Drill & keep running!
+            advanceToNextSegment();
           }
         }, 1000);
       }
     }
 
+    function advanceToNextSegment() {
+      currentDrillIndex++;
+      if (currentDrillIndex >= drillData.length) {
+        // Practice finished! Stop timer
+        clearInterval(timerInterval);
+        isRunning = false;
+        currentDrillIndex = 0;
+        document.getElementById('start-pause-btn').textContent = 'Start';
+        document.getElementById('start-pause-btn').className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
+        alert('Practice Drill Series Completed!');
+      } else {
+        // Reset to full segment length for the next drill and keep running automatically
+        totalSeconds = customSegmentMins * 60;
+      }
+      updateTimerDisplay();
+      const activeBtn = document.querySelector('.filter-btn.bg-emerald-600');
+      let currentFilter = 'All';
+      if (activeBtn && !activeBtn.textContent.includes('All')) currentFilter = activeBtn.textContent;
+      renderDrills(drillData, currentFilter);
+    }
+
     function resetTimer() {
       clearInterval(timerInterval);
       isRunning = false;
-      totalSeconds = 300; // reset to 5 mins
+      totalSeconds = customSegmentMins * 60;
       document.getElementById('start-pause-btn').textContent = 'Start';
       document.getElementById('start-pause-btn').className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
       updateTimerDisplay();
@@ -188,13 +228,23 @@
       if (currentDrillIndex < 0) currentDrillIndex = drillData.length - 1;
       if (currentDrillIndex >= drillData.length) currentDrillIndex = 0;
       
-      // Reset timer to 5 mins on segment change
-      clearInterval(timerInterval);
-      isRunning = false;
-      totalSeconds = 300;
-      document.getElementById('start-pause-btn').textContent = 'Start';
-      document.getElementById('start-pause-btn').className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
+      totalSeconds = customSegmentMins * 60;
       updateTimerDisplay();
+      
+      const activeBtn = document.querySelector('.filter-btn.bg-emerald-600');
+      let currentFilter = 'All';
+      if (activeBtn && !activeBtn.textContent.includes('All')) currentFilter = activeBtn.textContent;
+      renderDrills(drillData, currentFilter);
+    }
+
+    function jumpToDrill(index) {
+      currentDrillIndex = index;
+      totalSeconds = customSegmentMins * 60;
+      updateTimerDisplay();
+      const activeBtn = document.querySelector('.filter-btn.bg-emerald-600');
+      let currentFilter = 'All';
+      if (activeBtn && !activeBtn.textContent.includes('All')) currentFilter = activeBtn.textContent;
+      renderDrills(drillData, currentFilter);
     }
 
     loadData();
