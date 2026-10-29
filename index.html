@@ -15,15 +15,14 @@
           <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2">
             <span>⚾</span> Practice Drill Series Tracker
           </h1>
-          <p class="text-slate-400 text-sm mt-1">Active segment rises to the top with a louder 10-second warning alert.</p>
+          <p class="text-slate-400 text-sm mt-1">Manage practice flow, auto-advancing drills, and batting practice rotations.</p>
         </div>
 
-        <!-- Practice Segment Timer Box -->
-        <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[300px]">
+        <!-- Practice Segment Timer Box (Drills) -->
+        <div id="drill-timer-box" class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[300px]">
           <div class="text-xs uppercase tracking-wider text-emerald-400 font-bold mb-1" id="timer-title">Drill 1 Segment Timer</div>
           <div class="text-4xl font-mono font-black text-white tracking-widest my-1" id="timer-display">05:00</div>
           
-          <!-- Segment Duration Input -->
           <div class="flex items-center gap-2 my-2 text-xs text-slate-300">
             <span>Segment Length:</span>
             <input type="number" id="segment-length-input" value="5" min="1" max="60" onchange="updateSegmentLength(this.value)" class="w-14 bg-slate-900 border border-slate-700 text-center font-bold text-white rounded px-1.5 py-0.5 focus:outline-none focus:border-emerald-500">
@@ -43,20 +42,48 @@
             <button onclick="changeDrillSegment(1)" class="hover:text-white">Next Drill &rarr;</button>
           </div>
         </div>
+
+        <!-- Batting Practice Timer Box (Hidden by default) -->
+        <div id="bp-timer-box" class="hidden bg-slate-950/80 border border-amber-500/50 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[300px]">
+          <div class="text-xs uppercase tracking-wider text-amber-400 font-bold mb-1">Batting Practice Timer</div>
+          <div class="text-3xl font-mono font-black text-amber-300 tracking-widest my-1" id="bp-group-display">20:00</div>
+          <div class="text-xs text-slate-400">Group Time Remaining</div>
+          
+          <div class="text-xl font-mono font-bold text-white tracking-wider mt-2" id="bp-rotation-display">05:00</div>
+          <div class="text-xs text-amber-400/80 font-semibold">Rotation Time Remaining</div>
+
+          <!-- BP Settings -->
+          <div class="grid grid-cols-2 gap-2 my-2 text-xs text-slate-300 w-full pt-2 border-t border-slate-800">
+            <div class="flex flex-col items-center">
+              <span>Group Mins:</span>
+              <input type="number" id="bp-group-input" value="20" min="1" max="120" onchange="updateBPSettings()" class="w-14 bg-slate-900 border border-slate-700 text-center font-bold text-white rounded px-1.5 py-0.5 mt-1">
+            </div>
+            <div class="flex flex-col items-center">
+              <span>Rotation Mins:</span>
+              <input type="number" id="bp-rotation-input" value="5" min="1" max="60" onchange="updateBPSettings()" class="w-14 bg-slate-900 border border-slate-700 text-center font-bold text-white rounded px-1.5 py-0.5 mt-1">
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 mt-2 w-full justify-center">
+            <button onclick="toggleBPTimer()" id="bp-start-pause-btn" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition">Start BP</button>
+            <button onclick="resetBPTimer()" class="bg-slate-800 hover:bg-slate-700 text-xs px-3 py-1.5 rounded font-semibold text-slate-300">Reset</button>
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- Filter Buttons -->
+    <!-- Filter Buttons (Tabs) -->
     <div class="flex flex-wrap gap-2 mb-6">
-      <button onclick="filterDrills('All')" class="filter-btn bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow hover:bg-emerald-500 transition">All Drills</button>
-      <button onclick="filterDrills('Pitching Coach')" class="filter-btn bg-slate-900 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">Pitching Coach</button>
-      <button onclick="filterDrills('Catching Coach')" class="filter-btn bg-slate-900 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">Catching Coach</button>
-      <button onclick="filterDrills('Infield Coach')" class="filter-btn bg-slate-900 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">Infield Coach</button>
-      <button onclick="filterDrills('Outfield')" class="filter-btn bg-slate-900 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">Outfield</button>
+      <button onclick="switchTab('All')" class="filter-btn bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow hover:bg-emerald-500 transition">All Drills</button>
+      <button onclick="switchTab('Pitching Coach')" class="filter-btn bg-slate-900 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">Pitching Coach</button>
+      <button onclick="switchTab('Catching Coach')" class="filter-btn bg-slate-900 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">Catching Coach</button>
+      <button onclick="switchTab('Infield Coach')" class="filter-btn bg-slate-900 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">Infield Coach</button>
+      <button onclick="switchTab('Outfield')" class="filter-btn bg-slate-900 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">Outfield</button>
+      <button onclick="switchTab('Batting Practice')" class="filter-btn bg-slate-900 text-amber-400 border border-amber-900/50 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">Batting Practice</button>
     </div>
 
-    <!-- Drills Container -->
-    <div id="drills-container" class="space-y-4">
+    <!-- Main Container -->
+    <div id="main-container" class="space-y-4">
       <!-- Dynamically populated -->
     </div>
   </div>
@@ -69,6 +96,13 @@
     let isRunning = false;
     let currentActiveIndex = 0; 
     let audioCtx = null;
+    let currentTab = 'All';
+
+    // BP Timer Variables
+    let bpGroupSeconds = 20 * 60;
+    let bpRotationSeconds = 5 * 60;
+    let bpInterval = null;
+    let bpIsRunning = false;
 
     function playAlertSound(type = 'warning') {
       try {
@@ -80,33 +114,27 @@
         }
 
         if (type === 'warning') {
-          // Louder & longer 3-part beep sequence for 10-second warning
           let now = audioCtx.currentTime;
           for (let i = 0; i < 3; i++) {
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             osc.connect(gain);
             gain.connect(audioCtx.destination);
-
-            osc.type = 'square'; // harsher, louder sound wave
-            osc.frequency.setValueAtTime(880, now + (i * 0.25)); // A5 note
-            
-            gain.gain.setValueAtTime(0.7, now + (i * 0.25)); // Higher volume (0.7)
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(880, now + (i * 0.25));
+            gain.gain.setValueAtTime(0.7, now + (i * 0.25));
             gain.gain.exponentialRampToValueAtTime(0.0001, now + (i * 0.25) + 0.18);
-            
             osc.start(now + (i * 0.25));
             osc.stop(now + (i * 0.25) + 0.18);
           }
         } else {
-          // Segment change final completion tone
           let now = audioCtx.currentTime;
           let osc = audioCtx.createOscillator();
           let gain = audioCtx.createGain();
           osc.connect(gain);
           gain.connect(audioCtx.destination);
-
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(1046.50, now); // C6 note
+          osc.frequency.setValueAtTime(1046.50, now);
           gain.gain.setValueAtTime(0.8, now);
           gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
           osc.start(now);
@@ -121,8 +149,9 @@
       const response = await fetch('data.json');
       const data = await response.json();
       originalDrills = data.drills.map((d, index) => ({ ...d, originalIndex: index }));
-      renderDrills('All');
+      renderContent();
       updateTimerDisplay();
+      updateBPDisplay();
     }
 
     function getOrderedDrills() {
@@ -134,16 +163,44 @@
       return ordered;
     }
 
-    function renderDrills(filterCoach = 'All') {
-      const container = document.getElementById('drills-container');
+    function renderContent() {
+      const container = document.getElementById('main-container');
       container.innerHTML = '';
 
+      if (currentTab === 'Batting Practice') {
+        // Render Batting Practice View
+        container.innerHTML = `
+          <div class="bg-slate-900 border border-amber-500/30 rounded-2xl shadow-lg p-6 text-slate-200">
+            <h2 class="text-xl font-bold text-amber-400 mb-2 flex items-center gap-2"><span>🏏</span> Batting Practice Group & Rotation Manager</h2>
+            <p class="text-slate-400 text-sm mb-6">Use the timer box above to configure group lengths and automatic rotation intervals.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-slate-950 p-5 rounded-xl border border-slate-800">
+                <h3 class="font-bold text-slate-200 mb-2">How BP Management Works:</h3>
+                <ul class="text-sm text-slate-400 space-y-2 list-disc pl-4">
+                  <li>Set your total Group Time (e.g., 20 minutes per hitting group).</li>
+                  <li>Set your Rotation Time (e.g., 5 minutes per station rotation like batting cages, live BP, tee work, defensive stations).</li>
+                  <li>When the rotation timer hits 00:00, an alert sounds and the rotation resets automatically for the next group of hitters!</li>
+                </ul>
+              </div>
+              <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 flex flex-col justify-center items-center text-center">
+                <span class="text-3xl mb-2">⏱️</span>
+                <div class="text-sm font-semibold text-slate-300">Status: <span id="bp-status-text" class="text-amber-400">Ready</span></div>
+                <p class="text-xs text-slate-500 mt-1">Hit "Start BP" in the top right box to begin practice rotations.</p>
+              </div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // Render Drills View
       const orderedDrills = getOrderedDrills();
 
       orderedDrills.forEach((drillBlock, listPosition) => {
         const filteredTasks = drillBlock.tasks.filter(t => {
-          if (filterCoach === 'All') return true;
-          return t.coach.toLowerCase().includes(filterCoach.toLowerCase());
+          if (currentTab === 'All') return true;
+          return t.coach.toLowerCase().includes(currentTab.toLowerCase());
         });
 
         if (filteredTasks.length === 0) return;
@@ -189,17 +246,30 @@
       });
     }
 
-    function filterDrills(coachName) {
+    function switchTab(tabName) {
+      currentTab = tabName;
       document.querySelectorAll('.filter-btn').forEach(btn => {
-        let matches = (coachName === 'All' && btn.textContent === 'All Drills') || btn.textContent.includes(coachName);
+        let matches = btn.textContent.includes(tabName) || (tabName === 'All' && btn.textContent === 'All Drills');
         if(matches) {
-          btn.className = 'filter-btn bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow hover:bg-emerald-500 transition';
+          btn.className = `filter-btn ${tabName === 'Batting Practice' ? 'bg-amber-600 text-white' : 'bg-emerald-600 text-white'} px-4 py-2 rounded-xl text-sm font-semibold shadow transition`;
         } else {
-          btn.className = 'filter-btn bg-slate-900 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition';
+          btn.className = `filter-btn bg-slate-900 ${btn.textContent.includes('Batting Practice') ? 'text-amber-400 border border-amber-900/50' : 'text-slate-300 border border-slate-800'} px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition`;
         }
       });
-      let filterVal = coachName === 'All' ? 'All' : coachName;
-      renderDrills(filterVal);
+
+      // Toggle Timer Boxes in Header
+      const drillTimerBox = document.getElementById('drill-timer-box');
+      const bpTimerBox = document.getElementById('bp-timer-box');
+
+      if (tabName === 'Batting Practice') {
+        drillTimerBox.classList.add('hidden');
+        bpTimerBox.classList.remove('hidden');
+      } else {
+        drillTimerBox.classList.remove('hidden');
+        bpTimerBox.classList.add('hidden');
+      }
+
+      renderContent();
     }
 
     function updateTimerDisplay() {
@@ -227,12 +297,87 @@
       customSegmentMins = parsed;
       totalSeconds = customSegmentMins * 60;
       updateTimerDisplay();
-      
-      const activeBtn = document.querySelector('.filter-btn.bg-emerald-600');
-      let currentFilter = activeBtn ? (activeBtn.textContent.includes('All') ? 'All' : activeBtn.textContent) : 'All';
-      renderDrills(currentFilter);
+      renderContent();
     }
 
+    // --- BP Timer Functions ---
+    function updateBPDisplay() {
+      const gMins = Math.floor(bpGroupSeconds / 60);
+      const gSecs = bpGroupSeconds % 60;
+      document.getElementById('bp-group-display').textContent = `${String(gMins).padStart(2, '0')}:${String(gSecs).padStart(2, '0')}`;
+
+      const rMins = Math.floor(bpRotationSeconds / 60);
+      const rSecs = bpRotationSeconds % 60;
+      document.getElementById('bp-rotation-display').textContent = `${String(rMins).padStart(2, '0')}:${String(rSecs).padStart(2, '0')}`;
+    }
+
+    function updateBPSettings() {
+      let gInput = parseInt(document.getElementById('bp-group-input').value);
+      let rInput = parseInt(document.getElementById('bp-rotation-input').value);
+      
+      if (!isNaN(gInput) && gInput > 0) bpGroupSeconds = gInput * 60;
+      if (!isNaN(rInput) && rInput > 0) bpRotationSeconds = rInput * 60;
+      updateBPDisplay();
+    }
+
+    function toggleBPTimer() {
+      const btn = document.getElementById('bp-start-pause-btn');
+      const statusText = document.getElementById('bp-status-text');
+
+      if (bpIsRunning) {
+        clearInterval(bpInterval);
+        bpIsRunning = false;
+        btn.textContent = 'Start BP';
+        btn.className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition';
+        if(statusText) statusText.textContent = 'Paused';
+      } else {
+        bpIsRunning = true;
+        btn.textContent = 'Pause BP';
+        btn.className = 'bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition';
+        if(statusText) statusText.textContent = 'Running';
+
+        bpInterval = setInterval(() => {
+          let rInputMins = parseInt(document.getElementById('bp-rotation-input').value) || 5;
+
+          if (bpGroupSeconds > 0) bpGroupSeconds--;
+          if (bpRotationSeconds > 0) {
+            bpRotationSeconds--;
+            if (bpRotationSeconds === 10) playAlertSound('warning');
+          } else {
+            // Rotation completed -> alert & reset rotation timer
+            playAlertSound('complete');
+            bpRotationSeconds = rInputMins * 60;
+          }
+
+          if (bpGroupSeconds <= 0) {
+            clearInterval(bpInterval);
+            bpIsRunning = false;
+            btn.textContent = 'Start BP';
+            btn.className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition';
+            if(statusText) statusText.textContent = 'Group Finished';
+            alert('Batting Practice Group Time Completed!');
+          }
+          updateBPDisplay();
+        }, 1000);
+      }
+    }
+
+    function resetBPTimer() {
+      clearInterval(bpInterval);
+      bpIsRunning = false;
+      let gInput = parseInt(document.getElementById('bp-group-input').value) || 20;
+      let rInput = parseInt(document.getElementById('bp-rotation-input').value) || 5;
+      bpGroupSeconds = gInput * 60;
+      bpRotationSeconds = rInput * 60;
+
+      document.getElementById('bp-start-pause-btn').textContent = 'Start BP';
+      document.getElementById('bp-start-pause-btn').className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition';
+      const statusText = document.getElementById('bp-status-text');
+      if(statusText) statusText.textContent = 'Ready';
+      updateBPDisplay();
+    }
+
+    // --- Drill Timer Functions ---
     function toggleTimer() {
       const btn = document.getElementById('start-pause-btn');
       if (isRunning) {
@@ -247,9 +392,7 @@
         timerInterval = setInterval(() => {
           if (totalSeconds > 0) {
             totalSeconds--;
-            if (totalSeconds === 10) {
-              playAlertSound('warning');
-            }
+            if (totalSeconds === 10) playAlertSound('warning');
             updateTimerDisplay();
           } else {
             playAlertSound('complete');
@@ -272,10 +415,7 @@
         totalSeconds = customSegmentMins * 60;
       }
       updateTimerDisplay();
-      
-      const activeBtn = document.querySelector('.filter-btn.bg-emerald-600');
-      let currentFilter = activeBtn ? (activeBtn.textContent.includes('All') ? 'All' : activeBtn.textContent) : 'All';
-      renderDrills(currentFilter);
+      renderContent();
     }
 
     function resetTimer() {
@@ -297,20 +437,14 @@
       currentActiveIndex = (currentActiveIndex + direction + originalDrills.length) % originalDrills.length;
       totalSeconds = customSegmentMins * 60;
       updateTimerDisplay();
-      
-      const activeBtn = document.querySelector('.filter-btn.bg-emerald-600');
-      let currentFilter = activeBtn ? (activeBtn.textContent.includes('All') ? 'All' : activeBtn.textContent) : 'All';
-      renderDrills(currentFilter);
+      renderContent();
     }
 
     function jumpToDrill(originalIndex) {
       currentActiveIndex = originalIndex;
       totalSeconds = customSegmentMins * 60;
       updateTimerDisplay();
-      
-      const activeBtn = document.querySelector('.filter-btn.bg-emerald-600');
-      let currentFilter = activeBtn ? (activeBtn.textContent.includes('All') ? 'All' : activeBtn.textContent) : 'All';
-      renderDrills(currentFilter);
+      renderContent();
     }
 
     loadData();
