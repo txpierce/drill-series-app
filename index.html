@@ -8,14 +8,33 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen">
   <div class="max-w-4xl mx-auto p-4 sm:p-6">
-    <!-- Header -->
+    <!-- Header & Interactive Segment Timer -->
     <header class="bg-slate-900 border border-slate-800 text-white p-6 rounded-2xl shadow-xl mb-6">
-      <div class="flex items-center justify-between flex-wrap gap-4">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
           <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2">
             <span>⚾</span> Practice Drill Series Tracker
           </h1>
-          <p class="text-slate-400 text-sm mt-1">Manage practice flow, segment times, and coach responsibilities.</p>
+          <p class="text-slate-400 text-sm mt-1">Manage practice flow, live segments, and coach responsibilities.</p>
+        </div>
+
+        <!-- Practice Segment Timer Box -->
+        <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[280px]">
+          <div class="text-xs uppercase tracking-wider text-emerald-400 font-bold mb-1" id="timer-title">Drill 1 Segment Timer</div>
+          <div class="text-4xl font-mono font-black text-white tracking-widest my-1" id="timer-display">05:00</div>
+          
+          <div class="flex items-center gap-2 mt-2 w-full justify-center">
+            <button onclick="adjustTime(-1)" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded font-semibold text-slate-300">-1m</button>
+            <button onclick="toggleTimer()" id="start-pause-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition">Start</button>
+            <button onclick="resetTimer()" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded font-semibold text-slate-300">Reset</button>
+            <button onclick="adjustTime(1)" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded font-semibold text-slate-300">+1m</button>
+          </div>
+          
+          <div class="flex items-center justify-between w-full mt-3 pt-2 border-t border-slate-800/80 text-xs text-slate-400">
+            <button onclick="changeDrillSegment(-1)" class="hover:text-white">&larr; Prev Drill</button>
+            <span id="current-drill-indicator" class="font-semibold text-slate-200">Drill 1 of 12</span>
+            <button onclick="changeDrillSegment(1)" class="hover:text-white">Next Drill &rarr;</button>
+          </div>
         </div>
       </div>
     </header>
@@ -37,12 +56,17 @@
 
   <script>
     let drillData = [];
+    let currentDrillIndex = 0;
+    let timerInterval = null;
+    let totalSeconds = 300; // default 5 minutes
+    let isRunning = false;
 
     async function loadData() {
       const response = await fetch('data.json');
       const data = await response.json();
       drillData = data.drills;
       renderDrills(drillData);
+      updateTimerDisplay();
     }
 
     function renderDrills(drills, filterCoach = 'All') {
@@ -70,8 +94,8 @@
                     <span class="bg-slate-800 text-slate-300 border border-slate-700 text-xs font-bold px-2.5 py-0.5 rounded-md">${t.position}</span>
                     <span class="text-xs text-emerald-400 font-semibold">Lead: ${t.coach}</span>
                   </div>
-                  <span class="bg-slate-800/80 text-amber-400 border border-slate-700/60 text-xs font-mono font-bold px-2.5 py-0.5 rounded-md flex items-center gap-1">
-                    ⏱️ Segment: ${t.segmentTime}
+                  <span class="bg-slate-800/80 text-amber-400 border border-slate-700/60 text-xs font-mono font-bold px-2.5 py-0.5 rounded-md">
+                    ⏱️ ${t.segmentTime}
                   </span>
                 </div>
                 <h4 class="font-semibold text-slate-100 mt-1.5">${t.drill}</h4>
@@ -102,6 +126,75 @@
         }
       });
       renderDrills(drillData, coachName);
+    }
+
+    // --- Timer Functions ---
+    function updateTimerDisplay() {
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      document.getElementById('timer-display').textContent = 
+        `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      
+      if(drillData.length > 0) {
+        const currentDrillNum = drillData[currentDrillIndex].drillNumber;
+        document.getElementById('timer-title').textContent = `Drill ${currentDrillNum} Segment Timer`;
+        document.getElementById('current-drill-indicator').textContent = `Drill ${currentDrillIndex + 1} of ${drillData.length}`;
+      }
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById('start-pause-btn');
+      if (isRunning) {
+        clearInterval(timerInterval);
+        isRunning = false;
+        btn.textContent = 'Start';
+        btn.className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
+      } else {
+        isRunning = true;
+        btn.textContent = 'Pause';
+        btn.className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
+        timerInterval = setInterval(() => {
+          if (totalSeconds > 0) {
+            totalSeconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            isRunning = false;
+            btn.textContent = 'Start';
+            btn.className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
+            alert('Segment Time Completed!');
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isRunning = false;
+      totalSeconds = 300; // reset to 5 mins
+      document.getElementById('start-pause-btn').textContent = 'Start';
+      document.getElementById('start-pause-btn').className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
+      updateTimerDisplay();
+    }
+
+    function adjustTime(mins) {
+      totalSeconds += mins * 60;
+      if (totalSeconds < 0) totalSeconds = 0;
+      updateTimerDisplay();
+    }
+
+    function changeDrillSegment(direction) {
+      currentDrillIndex += direction;
+      if (currentDrillIndex < 0) currentDrillIndex = drillData.length - 1;
+      if (currentDrillIndex >= drillData.length) currentDrillIndex = 0;
+      
+      // Reset timer to 5 mins on segment change
+      clearInterval(timerInterval);
+      isRunning = false;
+      totalSeconds = 300;
+      document.getElementById('start-pause-btn').textContent = 'Start';
+      document.getElementById('start-pause-btn').className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
+      updateTimerDisplay();
     }
 
     loadData();
