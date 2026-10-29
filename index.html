@@ -15,7 +15,7 @@
           <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2">
             <span>⚾</span> Practice Drill Series Tracker
           </h1>
-          <p class="text-slate-400 text-sm mt-1">Manage practice flow, auto-advancing drills, and rotation-reset BP timers.</p>
+          <p class="text-slate-400 text-sm mt-1">Manage practice flow, auto-advancing drills, and multi-group BP rotations.</p>
         </div>
 
         <!-- Practice Segment Timer Box (Drills) -->
@@ -44,23 +44,28 @@
         </div>
 
         <!-- Batting Practice Timer Box (Hidden by default) -->
-        <div id="bp-timer-box" class="hidden bg-slate-950/80 border border-amber-500/50 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[300px]">
-          <div class="text-xs uppercase tracking-wider text-amber-400 font-bold mb-1">Batting Practice Timer</div>
+        <div id="bp-timer-box" class="hidden bg-slate-950/80 border border-amber-500/50 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[320px]">
+          <div class="text-xs uppercase tracking-wider text-amber-400 font-bold mb-1" id="bp-timer-title">Batting Practice (Rotation 1 of 4)</div>
+          
           <div class="text-3xl font-mono font-black text-amber-300 tracking-widest my-1" id="bp-group-display">20:00</div>
           <div class="text-xs text-slate-400">Group Time Remaining</div>
           
           <div class="text-xl font-mono font-bold text-white tracking-wider mt-2" id="bp-rotation-display">05:00</div>
-          <div class="text-xs text-amber-400/80 font-semibold">Rotation Time (Resets both when finished)</div>
+          <div class="text-xs text-amber-400/80 font-semibold">Rotation Time Remaining</div>
 
           <!-- BP Settings -->
-          <div class="grid grid-cols-2 gap-2 my-2 text-xs text-slate-300 w-full pt-2 border-t border-slate-800">
+          <div class="grid grid-cols-3 gap-2 my-2 text-xs text-slate-300 w-full pt-2 border-t border-slate-800">
             <div class="flex flex-col items-center">
               <span>Group Mins:</span>
-              <input type="number" id="bp-group-input" value="20" min="1" max="120" onchange="updateBPSettings()" class="w-14 bg-slate-900 border border-slate-700 text-center font-bold text-white rounded px-1.5 py-0.5 mt-1">
+              <input type="number" id="bp-group-input" value="20" min="1" max="120" onchange="updateBPSettings()" class="w-12 bg-slate-900 border border-slate-700 text-center font-bold text-white rounded px-1 py-0.5 mt-1">
             </div>
             <div class="flex flex-col items-center">
-              <span>Rotation Mins:</span>
-              <input type="number" id="bp-rotation-input" value="5" min="1" max="60" onchange="updateBPSettings()" class="w-14 bg-slate-900 border border-slate-700 text-center font-bold text-white rounded px-1.5 py-0.5 mt-1">
+              <span>Rotations:</span>
+              <input type="number" id="bp-total-rotations-input" value="4" min="1" max="10" onchange="updateBPSettings()" class="w-12 bg-slate-900 border border-slate-700 text-center font-bold text-white rounded px-1 py-0.5 mt-1">
+            </div>
+            <div class="flex flex-col items-center">
+              <span>Rot Mins:</span>
+              <input type="number" id="bp-rotation-input" value="5" min="1" max="60" onchange="updateBPSettings()" class="w-12 bg-slate-900 border border-slate-700 text-center font-bold text-white rounded px-1 py-0.5 mt-1">
             </div>
           </div>
 
@@ -100,6 +105,8 @@
 
     // BP Timer Variables
     let bpGroupSeconds = 20 * 60;
+    let bpTotalRotations = 4;
+    let bpCurrentRotation = 1;
     let bpRotationSeconds = 5 * 60;
     let bpInterval = null;
     let bpIsRunning = false;
@@ -173,15 +180,15 @@
         container.innerHTML = `
           <div class="bg-slate-900 border border-amber-500/30 rounded-2xl shadow-lg p-6 text-slate-200">
             <h2 class="text-xl font-bold text-amber-400 mb-2 flex items-center gap-2"><span>🏏</span> Batting Practice Group & Rotation Manager</h2>
-            <p class="text-slate-400 text-sm mb-6">Group timer runs first, followed by rotation timer. When the rotation timer runs out, both timers reset automatically.</p>
+            <p class="text-slate-400 text-sm mb-6">Manage total group hitting time alongside individual station rotations (up to 10 rotations).</p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="bg-slate-950 p-5 rounded-xl border border-slate-800">
-                <h3 class="font-bold text-slate-200 mb-2">BP Functionality:</h3>
+                <h3 class="font-bold text-slate-200 mb-2">BP Workflow:</h3>
                 <ul class="text-sm text-slate-400 space-y-2 list-disc pl-4">
-                  <li>Group Timer counts down first.</li>
-                  <li>Rotation Timer counts down only after Group Timer hits 00:00.</li>
-                  <li>When Rotation Timer hits 00:00, both timers trigger an alert and reset back to entered values.</li>
+                  <li>Set total Group Time and Station Rotation Length.</li>
+                  <li>Rotation timer counts down each station switch.</li>
+                  <li>When Group Time expires, an alert sounds and timers reset for the next group.</li>
                 </ul>
               </div>
               <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 flex flex-col justify-center items-center text-center">
@@ -310,7 +317,9 @@
       const rDisplay = document.getElementById('bp-rotation-display');
       rDisplay.textContent = `${String(rMins).padStart(2, '0')}:${String(rSecs).padStart(2, '0')}`;
 
-      if (bpRotationSeconds <= 10 && bpRotationSeconds > 0 && bpIsRunning && bpGroupSeconds <= 0) {
+      document.getElementById('bp-timer-title').textContent = `Batting Practice (Rotation ${bpCurrentRotation} of ${bpTotalRotations})`;
+
+      if (bpRotationSeconds <= 10 && bpRotationSeconds > 0 && bpIsRunning) {
         rDisplay.className = 'text-xl font-mono font-bold text-rose-500 tracking-wider mt-2 animate-pulse';
       } else {
         rDisplay.className = 'text-xl font-mono font-bold text-white tracking-wider mt-2';
@@ -319,10 +328,14 @@
 
     function updateBPSettings() {
       let gInput = parseInt(document.getElementById('bp-group-input').value);
+      let rTotalInput = parseInt(document.getElementById('bp-total-rotations-input').value);
       let rInput = parseInt(document.getElementById('bp-rotation-input').value);
       
       if (!isNaN(gInput) && gInput > 0) bpGroupSeconds = gInput * 60;
+      if (!isNaN(rTotalInput) && rTotalInput >= 1 && rTotalInput <= 10) bpTotalRotations = rTotalInput;
+      if (bpCurrentRotation > bpTotalRotations) bpCurrentRotation = bpTotalRotations;
       if (!isNaN(rInput) && rInput > 0) bpRotationSeconds = rInput * 60;
+      
       updateBPDisplay();
     }
 
@@ -340,7 +353,7 @@
         bpIsRunning = true;
         btn.textContent = 'Pause BP';
         btn.className = 'bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition';
-        if(statusText) statusText.textContent = bpGroupSeconds > 0 ? 'Group Running' : 'Rotation Running';
+        if(statusText) statusText.textContent = `Group Running (Rotation ${bpCurrentRotation})`;
 
         bpInterval = setInterval(() => {
           let gInputMins = parseInt(document.getElementById('bp-group-input').value) || 20;
@@ -348,30 +361,39 @@
 
           if (bpGroupSeconds > 0) {
             bpGroupSeconds--;
-            if (bpGroupSeconds === 10) playAlertSound('warning');
-            if (bpGroupSeconds === 0) {
-              playAlertSound('complete');
-            }
-          } else {
-            // Group time is done, now run rotation timer
-            if(statusText) statusText.textContent = 'Rotation Running';
-            if (bpRotationSeconds > 0) {
-              bpRotationSeconds--;
-              if (bpRotationSeconds === 10) playAlertSound('warning');
-            } else {
-              // Rotation Timer Finished -> Trigger alert and reset BOTH timers back to entered values
-              playAlertSound('complete');
-              clearInterval(bpInterval);
-              bpIsRunning = false;
-              btn.textContent = 'Start BP';
-              btn.className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition';
-              if(statusText) statusText.textContent = 'Completed & Reset';
-              
-              bpGroupSeconds = gInputMins * 60;
-              bpRotationSeconds = rInputMins * 60;
-              alert('Rotation Time Completed! Both timers have been reset.');
-            }
           }
+
+          if (bpRotationSeconds > 0) {
+            bpRotationSeconds--;
+            if (bpRotationSeconds === 10) playAlertSound('warning');
+          } else {
+            // Station Rotation Finished -> Alert and reset rotation timer for next station
+            playAlertSound('complete');
+            bpCurrentRotation++;
+
+            if (bpCurrentRotation > bpTotalRotations) {
+              bpCurrentRotation = 1; // loop rotations if group time still remains
+            }
+            bpRotationSeconds = rInputMins * 60;
+          }
+
+          if (bpGroupSeconds <= 0) {
+            // Full Group Time Completed -> Alert and reset everything
+            playAlertSound('complete');
+            clearInterval(bpInterval);
+            bpIsRunning = false;
+            btn.textContent = 'Start BP';
+            btn.className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition';
+            if(statusText) statusText.textContent = 'Group Time Completed';
+            
+            bpGroupSeconds = gInputMins * 60;
+            bpCurrentRotation = 1;
+            bpRotationSeconds = rInputMins * 60;
+            updateBPDisplay();
+            alert('Batting Practice Group Time Completed! Timers have been reset for the next group.');
+            return;
+          }
+
           updateBPDisplay();
         }, 1000);
       }
@@ -380,6 +402,7 @@
     function resetBPTimer() {
       clearInterval(bpInterval);
       bpIsRunning = false;
+      bpCurrentRotation = 1;
       let gInput = parseInt(document.getElementById('bp-group-input').value) || 20;
       let rInput = parseInt(document.getElementById('bp-rotation-input').value) || 5;
       bpGroupSeconds = gInput * 60;
