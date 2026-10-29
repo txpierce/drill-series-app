@@ -4,7 +4,7 @@
       "drillNumber": 1,
       "tasks": [
         { "position": "Infield", "drill": "Infield Double Plays", "coach": "Coach", "description": "Standard infield double play execution." },
-        { "position": "Outfield", "drill": "Ground Ball Approach Drills", "coach": "Coach Nolan", "description": "Focuses on proper technique for outfielders approaching and fielding ground balls[cite: 1]." },
+        { "position": "Outfield", "drill": "Ground Ball Approach Drills", "coach": "Outfield", "description": "Focuses on proper technique for outfielders approaching and fielding ground balls[cite: 1]." },
         { "position": "Catchers & 1B", "drill": "Strike 3 in Dirt Throw-Out", "coach": "Catching Coach", "description": "Catchers practice retrieving strike-three pitches in the dirt and executing throw-outs to first base[cite: 1]." }
       ]
     },
@@ -13,7 +13,7 @@
       "tasks": [
         { "position": "Pitchers/3B/1B/2B", "drill": "Bunt Communication", "coach": "Pitching Coach", "description": "Players rehearse bunt defense communication, assigning roles and ensuring clarity[cite: 1]." },
         { "position": "SS", "drill": "Individual Ground Ball Work", "coach": "Infield Coach", "description": "Individual defensive repetitions for shortstops." },
-        { "position": "Outfield", "drill": "Fly Ball QB Drills (Infront)", "coach": "Coach Nolan", "description": "Outfielders practice catching fly balls focusing on footwork, tracking, and communication[cite: 1]." },
+        { "position": "Outfield", "drill": "Fly Ball QB Drills (Infront)", "coach": "Outfield", "description": "Outfielders practice catching fly balls focusing on footwork, tracking, and communication[cite: 1]." },
         { "position": "Catchers", "drill": "Blocking Drills", "coach": "Catching Coach", "description": "Focuses on catchers improving technique and reaction for blocking pitches[cite: 1]." }
       ]
     },
@@ -21,7 +21,7 @@
       "drillNumber": 3,
       "tasks": [
         { "position": "Pitchers/1B/2B/SS", "drill": "3-1 Plays", "coach": "Pitching Coach", "description": "Focuses on pitchers covering first base and executing 3-1 plays[cite: 1]." },
-        { "position": "Outfield", "drill": "Fly Ball QB Drills (Overhead)", "coach": "Coach Nolan", "description": "Repetition of fly ball tracking with a focus on catching under pressure[cite: 1]." },
+        { "position": "Outfield", "drill": "Fly Ball QB Drills (Overhead)", "coach": "Outfield", "description": "Repetition of fly ball tracking with a focus on catching under pressure[cite: 1]." },
         { "position": "3B", "drill": "Individual Ground Ball Work", "coach": "Infield Coach", "description": "Individual work for third basemen." },
         { "position": "Catchers", "drill": "Pop Times to 2nd (SS)", "coach": "Catching Coach", "description": "Drills for quick transfers and accurate throws to second base[cite: 1]." }
       ]
@@ -30,7 +30,7 @@
       "drillNumber": 4,
       "tasks": [
         { "position": "Pitchers/1B/3B", "drill": "3-1, 4-1 Catcher Backing Up", "coach": "Pitching Coach", "description": "Drills for coordinating plays with emphasis on catchers backing up[cite: 1]." },
-        { "position": "Outfield", "drill": "Fly Ball Communication", "coach": "Coach Nolan", "description": "Emphasizes clear communication between outfielders when calling for fly balls[cite: 1]." },
+        { "position": "Outfield", "drill": "Fly Ball Communication", "coach": "Outfield", "description": "Emphasizes clear communication between outfielders when calling for fly balls[cite: 1]." },
         { "position": "SS/3B", "drill": "Grounder in the Hole", "coach": "Infield Coach", "description": "Handling grounders in the hole between SS and 3B." },
         { "position": "Catchers", "drill": "Catcher Backing Up", "coach": "Catching Coach", "description": "Emphasizes proper positioning for catchers backing up bases[cite: 1]." }
       ]
@@ -39,7 +39,7 @@
       "drillNumber": 5,
       "tasks": [
         { "position": "Pitchers/2B/SS/3B", "drill": "Pick Plays; Rundowns", "coach": "Pitching Coach", "description": "Practices pickoff plays and managing rundowns efficiently[cite: 1]." },
-        { "position": "Outfield", "drill": "Ground Ball Communication", "coach": "Coach Nolan", "description": "Outfielders practice communication when fielding ground balls[cite: 1]." },
+        { "position": "Outfield", "drill": "Ground Ball Communication", "coach": "Outfield", "description": "Outfielders practice communication when fielding ground balls[cite: 1]." },
         { "position": "1B", "drill": "Individual Ground Ball Work", "coach": "Infield Coach", "description": "Individual reps for first basemen." },
         { "position": "Pitchers & Catchers", "drill": "Wild Pitch Coverage at the Plate", "coach": "Catching Coach", "description": "Covering wild pitches and plays at home plate." }
       ]
@@ -48,7 +48,7 @@
       "drillNumber": 6,
       "tasks": [
         { "position": "Pitchers & Catchers", "drill": "Squeeze Plays", "coach": "Pitching / Catching", "description": "Defensive strategies for handling squeeze plays at home plate[cite: 1]." },
-        { "position": "Outfield", "drill": "Clock Fly Ball Drill", "coach": "Coach Nolan", "description": "Outfielders practice tracking using a 'clock' system for positioning[cite: 1]." },
+        { "position": "Outfield", "drill": "Clock Fly Ball Drill", "coach": "Outfield", "description": "Outfielders practice tracking using a 'clock' system for positioning[cite: 1]." },
         { "position": "SS/2B", "drill": "Double Play Turn Drills", "coach": "Infield Coach", "description": "Double play footwork and feeds for middle infielders." },
         { "position": "1B/3B", "drill": "Foul Pop-Ups with Machine", "coach": "Coach", "description": "Foul pop-up tracking using a pitching machine." }
       ]
@@ -57,14 +57,14 @@
       "drillNumber": 7,
       "tasks": [
         { "position": "Infield", "drill": "Slow Rollers Play at 1B", "coach": "Infield Coach", "description": "Executing bare-hand plays and slow rollers." },
-        { "position": "Outfield", "drill": "Fly Ball Clock Drill", "coach": "Coach Nolan", "description": "Outfield tracking drill[cite: 1]." },
+        { "position": "Outfield", "drill": "Fly Ball Clock Drill", "coach": "Outfield", "description": "Outfield tracking drill[cite: 1]." },
         { "position": "Catchers", "drill": "Fly Balls", "coach": "Catching Coach", "description": "Catchers practice catching high pop-ups and fly balls[cite: 1]." }
       ]
     },
     {
       "drillNumber": 8,
       "tasks": [
-        { "position": "Outfield", "drill": "Water and Teaching Period", "coach": "Coach Nolan", "description": "Hydration and mental/physical recovery period[cite: 1]." },
+        { "position": "Outfield", "drill": "Water and Teaching Period", "coach": "Outfield", "description": "Hydration and mental/physical recovery period[cite: 1]." },
         { "position": "Infield", "drill": "Fungo Infield In, Force Tags at Plate", "coach": "Coach Jaxon / Ditto", "description": "Infielders simulate in-game force and tag plays at home plate[cite: 1]." },
         { "position": "Catchers", "drill": "Receive and Block the Plate", "coach": "Catching Coach", "description": "Drill for receiving throws and blocking the plate during tag plays[cite: 1]." }
       ]
@@ -74,7 +74,7 @@
       "tasks": [
         { "position": "Pitchers & SS", "drill": "Inside Move", "coach": "Pitching Coach", "description": "Pitchers practice the inside pickoff move to second base with the shortstop[cite: 1]." },
         { "position": "2B", "drill": "Individual Ground Ball Work", "coach": "Infield Coach", "description": "Individual ground ball repetitions for second basemen." },
-        { "position": "Outfield", "drill": "Throw with Partner", "coach": "Coach Nolan", "description": "Improving throwing mechanics, accuracy, and strength[cite: 1]." },
+        { "position": "Outfield", "drill": "Throw with Partner", "coach": "Outfield", "description": "Improving throwing mechanics, accuracy, and strength[cite: 1]." },
         { "position": "Catchers/1B/3B", "drill": "Pop-Up Communication", "coach": "Catching Coach", "description": "Practices communication for catching pop-ups between catchers and corners[cite: 1]." }
       ]
     },
@@ -82,21 +82,21 @@
       "drillNumber": 10,
       "tasks": [
         { "position": "Infield", "drill": "Bunt Coverage", "coach": "Infield Coach", "description": "Team bunt defense execution." },
-        { "position": "Outfield", "drill": "Throw Through Cut", "coach": "Coach Nolan", "description": "Practicing throws through the cut-off man on long throws[cite: 1]." }
+        { "position": "Outfield", "drill": "Throw Through Cut", "coach": "Outfield", "description": "Practicing throws through the cut-off man on long throws[cite: 1]." }
       ]
     },
     {
       "drillNumber": 11,
       "tasks": [
         { "position": "Pitchers/1B/SS/2B", "drill": "Timing Back Pick with Rundowns", "coach": "Pitching Coach", "description": "Executing timed back picks and transitioning into rundowns[cite: 1]." },
-        { "position": "Outfield/3B", "drill": "Throws to Third from Center", "coach": "Coach Nolan", "description": "Accurate, strong throws from outfield to third base[cite: 1]." },
+        { "position": "Outfield/3B", "drill": "Throws to Third from Center", "coach": "Outfield", "description": "Accurate, strong throws from outfield to third base[cite: 1]." },
         { "position": "Catchers", "drill": "Framing", "coach": "Catching Coach", "description": "Focuses on framing pitches effectively to present strikes[cite: 1]." }
       ]
     },
     {
       "drillNumber": 12,
       "tasks": [
-        { "position": "Outfield", "drill": "Fly Ball Communication with SS/2B", "coach": "Coach Nolan", "description": "Communication with SS and 2B on gap fly balls[cite: 1]." },
+        { "position": "Outfield", "drill": "Fly Ball Communication with SS/2B", "coach": "Outfield", "description": "Communication with SS and 2B on gap fly balls[cite: 1]." },
         { "position": "Pitchers/Catchers/1B/3B", "drill": "Pick-Offs; Missed Bunt/Pitchout/PFP", "coach": "Pitching Coach", "description": "Specialized pitcher-fielder practice situations." }
       ]
     }
