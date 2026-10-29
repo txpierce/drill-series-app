@@ -15,7 +15,7 @@
           <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2">
             <span>⚾</span> Practice Drill Series Tracker
           </h1>
-          <p class="text-slate-400 text-sm mt-1">Manage practice flow, auto-advancing drills, and batting practice rotations.</p>
+          <p class="text-slate-400 text-sm mt-1">Manage practice flow, auto-advancing drills, and synchronized BP rotations.</p>
         </div>
 
         <!-- Practice Segment Timer Box (Drills) -->
@@ -114,31 +114,35 @@
         }
 
         if (type === 'warning') {
+          // Extra loud & long 4-part piercing warning beep
           let now = audioCtx.currentTime;
-          for (let i = 0; i < 3; i++) {
+          for (let i = 0; i < 4; i++) {
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.type = 'square';
-            osc.frequency.setValueAtTime(880, now + (i * 0.25));
-            gain.gain.setValueAtTime(0.7, now + (i * 0.25));
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + (i * 0.25) + 0.18);
-            osc.start(now + (i * 0.25));
-            osc.stop(now + (i * 0.25) + 0.18);
+            osc.frequency.setValueAtTime(987.77, now + (i * 0.22)); // B5 note
+            gain.gain.setValueAtTime(0.9, now + (i * 0.22)); // Max volume
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + (i * 0.22) + 0.16);
+            osc.start(now + (i * 0.22));
+            osc.stop(now + (i * 0.22) + 0.16);
           }
         } else {
+          // Heavy completion chime
           let now = audioCtx.currentTime;
-          let osc = audioCtx.createOscillator();
-          let gain = audioCtx.createGain();
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(1046.50, now);
-          gain.gain.setValueAtTime(0.8, now);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
-          osc.start(now);
-          osc.stop(now + 0.6);
+          for (let i = 0; i < 2; i++) {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(1318.51, now + (i * 0.3)); // E6 note
+            gain.gain.setValueAtTime(0.9, now + (i * 0.3));
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + (i * 0.3) + 0.4);
+            osc.start(now + (i * 0.3));
+            osc.stop(now + (i * 0.3) + 0.4);
+          }
         }
       } catch (e) {
         console.log("Audio play error:", e);
@@ -168,25 +172,24 @@
       container.innerHTML = '';
 
       if (currentTab === 'Batting Practice') {
-        // Render Batting Practice View
         container.innerHTML = `
           <div class="bg-slate-900 border border-amber-500/30 rounded-2xl shadow-lg p-6 text-slate-200">
             <h2 class="text-xl font-bold text-amber-400 mb-2 flex items-center gap-2"><span>🏏</span> Batting Practice Group & Rotation Manager</h2>
-            <p class="text-slate-400 text-sm mb-6">Use the timer box above to configure group lengths and automatic rotation intervals.</p>
+            <p class="text-slate-400 text-sm mb-6">Configure group lengths and rotation intervals above. The rotation timer runs synchronously with the group timer.</p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="bg-slate-950 p-5 rounded-xl border border-slate-800">
-                <h3 class="font-bold text-slate-200 mb-2">How BP Management Works:</h3>
+                <h3 class="font-bold text-slate-200 mb-2">BP Functionality:</h3>
                 <ul class="text-sm text-slate-400 space-y-2 list-disc pl-4">
-                  <li>Set your total Group Time (e.g., 20 minutes per hitting group).</li>
-                  <li>Set your Rotation Time (e.g., 5 minutes per station rotation like batting cages, live BP, tee work, defensive stations).</li>
-                  <li>When the rotation timer hits 00:00, an alert sounds and the rotation resets automatically for the next group of hitters!</li>
+                  <li>Rotation timer automatically starts when you click <b>Start BP</b>.</li>
+                  <li>When rotation time hits 00:00, it sounds a loud alert and resets automatically for the next station rotation.</li>
+                  <li>When the full group time expires, both timers stop and alert the coach.</li>
                 </ul>
               </div>
               <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 flex flex-col justify-center items-center text-center">
                 <span class="text-3xl mb-2">⏱️</span>
                 <div class="text-sm font-semibold text-slate-300">Status: <span id="bp-status-text" class="text-amber-400">Ready</span></div>
-                <p class="text-xs text-slate-500 mt-1">Hit "Start BP" in the top right box to begin practice rotations.</p>
+                <p class="text-xs text-slate-500 mt-1">Hit "Start BP" in the top right box to begin rotations.</p>
               </div>
             </div>
           </div>
@@ -194,7 +197,6 @@
         return;
       }
 
-      // Render Drills View
       const orderedDrills = getOrderedDrills();
 
       orderedDrills.forEach((drillBlock, listPosition) => {
@@ -257,7 +259,6 @@
         }
       });
 
-      // Toggle Timer Boxes in Header
       const drillTimerBox = document.getElementById('drill-timer-box');
       const bpTimerBox = document.getElementById('bp-timer-box');
 
@@ -308,7 +309,14 @@
 
       const rMins = Math.floor(bpRotationSeconds / 60);
       const rSecs = bpRotationSeconds % 60;
-      document.getElementById('bp-rotation-display').textContent = `${String(rMins).padStart(2, '0')}:${String(rSecs).padStart(2, '0')}`;
+      const rDisplay = document.getElementById('bp-rotation-display');
+      rDisplay.textContent = `${String(rMins).padStart(2, '0')}:${String(rSecs).padStart(2, '0')}`;
+
+      if (bpRotationSeconds <= 10 && bpRotationSeconds > 0 && bpIsRunning) {
+        rDisplay.className = 'text-xl font-mono font-bold text-rose-500 tracking-wider mt-2 animate-pulse';
+      } else {
+        rDisplay.className = 'text-xl font-mono font-bold text-white tracking-wider mt-2';
+      }
     }
 
     function updateBPSettings() {
@@ -340,13 +348,13 @@
           let rInputMins = parseInt(document.getElementById('bp-rotation-input').value) || 5;
 
           if (bpGroupSeconds > 0) bpGroupSeconds--;
+          
           if (bpRotationSeconds > 0) {
             bpRotationSeconds--;
             if (bpRotationSeconds === 10) playAlertSound('warning');
           } else {
-            // Rotation completed -> alert & reset rotation timer
             playAlertSound('complete');
-            bpRotationSeconds = rInputMins * 60;
+            bpRotationSeconds = rInputMins * 60; // Reset rotation timer
           }
 
           if (bpGroupSeconds <= 0) {
@@ -355,6 +363,7 @@
             btn.textContent = 'Start BP';
             btn.className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition';
             if(statusText) statusText.textContent = 'Group Finished';
+            playAlertSound('complete');
             alert('Batting Practice Group Time Completed!');
           }
           updateBPDisplay();
