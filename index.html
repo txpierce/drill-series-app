@@ -15,7 +15,7 @@
           <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2">
             <span>⚾</span> Practice Drill Series Tracker
           </h1>
-          <p class="text-slate-400 text-sm mt-1">Manage practice flow, auto-advancing drills, and synchronized BP rotations.</p>
+          <p class="text-slate-400 text-sm mt-1">Manage practice flow, auto-advancing drills, and rotation-reset BP timers.</p>
         </div>
 
         <!-- Practice Segment Timer Box (Drills) -->
@@ -50,7 +50,7 @@
           <div class="text-xs text-slate-400">Group Time Remaining</div>
           
           <div class="text-xl font-mono font-bold text-white tracking-wider mt-2" id="bp-rotation-display">05:00</div>
-          <div class="text-xs text-amber-400/80 font-semibold">Rotation Time Remaining</div>
+          <div class="text-xs text-amber-400/80 font-semibold">Rotation Time (Resets both when finished)</div>
 
           <!-- BP Settings -->
           <div class="grid grid-cols-2 gap-2 my-2 text-xs text-slate-300 w-full pt-2 border-t border-slate-800">
@@ -114,7 +114,6 @@
         }
 
         if (type === 'warning') {
-          // Extra loud & long 4-part piercing warning beep
           let now = audioCtx.currentTime;
           for (let i = 0; i < 4; i++) {
             let osc = audioCtx.createOscillator();
@@ -122,14 +121,13 @@
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.type = 'square';
-            osc.frequency.setValueAtTime(987.77, now + (i * 0.22)); // B5 note
-            gain.gain.setValueAtTime(0.9, now + (i * 0.22)); // Max volume
+            osc.frequency.setValueAtTime(987.77, now + (i * 0.22));
+            gain.gain.setValueAtTime(0.9, now + (i * 0.22));
             gain.gain.exponentialRampToValueAtTime(0.0001, now + (i * 0.22) + 0.16);
             osc.start(now + (i * 0.22));
             osc.stop(now + (i * 0.22) + 0.16);
           }
         } else {
-          // Heavy completion chime
           let now = audioCtx.currentTime;
           for (let i = 0; i < 2; i++) {
             let osc = audioCtx.createOscillator();
@@ -137,7 +135,7 @@
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(1318.51, now + (i * 0.3)); // E6 note
+            osc.frequency.setValueAtTime(1318.51, now + (i * 0.3));
             gain.gain.setValueAtTime(0.9, now + (i * 0.3));
             gain.gain.exponentialRampToValueAtTime(0.0001, now + (i * 0.3) + 0.4);
             osc.start(now + (i * 0.3));
@@ -175,21 +173,21 @@
         container.innerHTML = `
           <div class="bg-slate-900 border border-amber-500/30 rounded-2xl shadow-lg p-6 text-slate-200">
             <h2 class="text-xl font-bold text-amber-400 mb-2 flex items-center gap-2"><span>🏏</span> Batting Practice Group & Rotation Manager</h2>
-            <p class="text-slate-400 text-sm mb-6">Configure group lengths and rotation intervals above. The rotation timer runs synchronously with the group timer.</p>
+            <p class="text-slate-400 text-sm mb-6">Group timer runs first, followed by rotation timer. When the rotation timer runs out, both timers reset automatically.</p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="bg-slate-950 p-5 rounded-xl border border-slate-800">
                 <h3 class="font-bold text-slate-200 mb-2">BP Functionality:</h3>
                 <ul class="text-sm text-slate-400 space-y-2 list-disc pl-4">
-                  <li>Rotation timer automatically starts when you click <b>Start BP</b>.</li>
-                  <li>When rotation time hits 00:00, it sounds a loud alert and resets automatically for the next station rotation.</li>
-                  <li>When the full group time expires, both timers stop and alert the coach.</li>
+                  <li>Group Timer counts down first.</li>
+                  <li>Rotation Timer counts down only after Group Timer hits 00:00.</li>
+                  <li>When Rotation Timer hits 00:00, both timers trigger an alert and reset back to entered values.</li>
                 </ul>
               </div>
               <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 flex flex-col justify-center items-center text-center">
                 <span class="text-3xl mb-2">⏱️</span>
                 <div class="text-sm font-semibold text-slate-300">Status: <span id="bp-status-text" class="text-amber-400">Ready</span></div>
-                <p class="text-xs text-slate-500 mt-1">Hit "Start BP" in the top right box to begin rotations.</p>
+                <p class="text-xs text-slate-500 mt-1">Hit "Start BP" in the top right box to begin.</p>
               </div>
             </div>
           </div>
@@ -312,7 +310,7 @@
       const rDisplay = document.getElementById('bp-rotation-display');
       rDisplay.textContent = `${String(rMins).padStart(2, '0')}:${String(rSecs).padStart(2, '0')}`;
 
-      if (bpRotationSeconds <= 10 && bpRotationSeconds > 0 && bpIsRunning) {
+      if (bpRotationSeconds <= 10 && bpRotationSeconds > 0 && bpIsRunning && bpGroupSeconds <= 0) {
         rDisplay.className = 'text-xl font-mono font-bold text-rose-500 tracking-wider mt-2 animate-pulse';
       } else {
         rDisplay.className = 'text-xl font-mono font-bold text-white tracking-wider mt-2';
@@ -342,29 +340,37 @@
         bpIsRunning = true;
         btn.textContent = 'Pause BP';
         btn.className = 'bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition';
-        if(statusText) statusText.textContent = 'Running';
+        if(statusText) statusText.textContent = bpGroupSeconds > 0 ? 'Group Running' : 'Rotation Running';
 
         bpInterval = setInterval(() => {
+          let gInputMins = parseInt(document.getElementById('bp-group-input').value) || 20;
           let rInputMins = parseInt(document.getElementById('bp-rotation-input').value) || 5;
 
-          if (bpGroupSeconds > 0) bpGroupSeconds--;
-          
-          if (bpRotationSeconds > 0) {
-            bpRotationSeconds--;
-            if (bpRotationSeconds === 10) playAlertSound('warning');
+          if (bpGroupSeconds > 0) {
+            bpGroupSeconds--;
+            if (bpGroupSeconds === 10) playAlertSound('warning');
+            if (bpGroupSeconds === 0) {
+              playAlertSound('complete');
+            }
           } else {
-            playAlertSound('complete');
-            bpRotationSeconds = rInputMins * 60; // Reset rotation timer
-          }
-
-          if (bpGroupSeconds <= 0) {
-            clearInterval(bpInterval);
-            bpIsRunning = false;
-            btn.textContent = 'Start BP';
-            btn.className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition';
-            if(statusText) statusText.textContent = 'Group Finished';
-            playAlertSound('complete');
-            alert('Batting Practice Group Time Completed!');
+            // Group time is done, now run rotation timer
+            if(statusText) statusText.textContent = 'Rotation Running';
+            if (bpRotationSeconds > 0) {
+              bpRotationSeconds--;
+              if (bpRotationSeconds === 10) playAlertSound('warning');
+            } else {
+              // Rotation Timer Finished -> Trigger alert and reset BOTH timers back to entered values
+              playAlertSound('complete');
+              clearInterval(bpInterval);
+              bpIsRunning = false;
+              btn.textContent = 'Start BP';
+              btn.className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition';
+              if(statusText) statusText.textContent = 'Completed & Reset';
+              
+              bpGroupSeconds = gInputMins * 60;
+              bpRotationSeconds = rInputMins * 60;
+              alert('Rotation Time Completed! Both timers have been reset.');
+            }
           }
           updateBPDisplay();
         }, 1000);
