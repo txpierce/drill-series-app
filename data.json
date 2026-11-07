@@ -1,106 +1,397 @@
 {
-  "drills": [
+  "weekTitle": "Week 9 (March 30 - April 4, 2026)",
+  "generalNotes": [
+    "Locker rooms monitored daily. Nothing on ground or seats. No food or drink in locker rooms. All items in lockers!",
+    "All players: Minimum 2 lifts per week.",
+    "Send medical notes to athletictrainer@kinkaid.org",
+    "Open cages / Tarps / Flatgrounds for those in town on Friday & Saturday (10:00 - 11:00 AM)"
+  ],
+  "coaches": [
+    "Pierce",
+    "Williams",
+    "Davis",
+    "Dittoe",
+    "Maas",
+    "Layhew",
+    "Clayton",
+    "Stewart",
+    "Whitman",
+    "Jaxon",
+    "Ditto",
+    "Staff"
+  ],
+  "players": [
+    "Rosser",
+    "Gutierrez",
+    "Warner",
+    "Leonard",
+    "Adam",
+    "Jones",
+    "Gibbs",
+    "Absmeier",
+    "Aldridge",
+    "Harper",
+    "Hogan",
+    "Coffman",
+    "Smith",
+    "Guyton",
+    "Nyveen",
+    "Drake",
+    "Hudson",
+    "Setrum",
+    "Roman",
+    "West",
+    "Kneale"
+  ],
+  "days": [
     {
-      "drillNumber": 1,
-      "tasks": [
-        { "position": "Infield", "drill": "Infield Double Plays", "coach": "Infield Coach", "description": "Standard infield double play execution.", "segmentTime": "5 mins" },
-        { "position": "Outfield", "drill": "Ground Ball Approach Drills", "coach": "Outfield", "description": "Focuses on proper technique for outfielders approaching and fielding ground balls.", "segmentTime": "5 mins" },
-        { "position": "Catchers & 1B", "drill": "Strike 3 in Dirt Throw-Out", "coach": "Catching Coach", "description": "Catchers practice retrieving strike-three pitches in the dirt and executing throw-outs to first base.", "segmentTime": "5 mins" }
+      "dayId": "monday",
+      "dayName": "Monday, March 30th",
+      "scheduleOverview": "Practice & Lower Level Games",
+      "events": [
+        {
+          "time": "4:15 PM",
+          "title": "8 Purple AOS @ Kinkaid",
+          "type": "game"
+        },
+        {
+          "time": "4:15 PM",
+          "title": "7th Grade Gold @ St. John's",
+          "type": "game"
+        },
+        {
+          "time": "5:00 PM",
+          "title": "JV Weights",
+          "type": "lifting"
+        }
+      ],
+      "segments": [
+        {
+          "segmentNumber": 1,
+          "time": "3:20 PM",
+          "durationMins": 20,
+          "title": "Warm Up",
+          "details": "All players active stretch and throw"
+        },
+        {
+          "segmentNumber": 2,
+          "time": "3:40 PM",
+          "durationMins": 20,
+          "title": "Mass Ground Balls & Flyballs (Entire Program)",
+          "details": "Coaches: Pierce, Williams, Davis. PO's set up double cuts (2 in each corner and gap). All pitchers tarps... spin offspeed (Dittoe, Maas)."
+        },
+        {
+          "segmentNumber": 3,
+          "time": "4:00 PM",
+          "durationMins": 5,
+          "title": "Double Cuts (Varsity + JV)",
+          "details": "Staff lead. PO's have balls ready."
+        },
+        {
+          "segmentNumber": 4,
+          "time": "4:05 PM",
+          "durationMins": 30,
+          "title": "Situations with Runners",
+          "details": "Staff lead. Live situational defense and baserunning execution."
+        },
+        {
+          "segmentNumber": 5,
+          "time": "4:35 PM",
+          "durationMins": 5,
+          "title": "Bunt Coverages",
+          "details": "Staff lead. Review team bunt defense responsibilities."
+        },
+        {
+          "segmentNumber": 6,
+          "time": "4:40 PM",
+          "durationMins": 5,
+          "title": "1st and 3rds Defense",
+          "details": "Staff lead. Special play execution for 1st & 3rd situations."
+        },
+        {
+          "segmentNumber": 7,
+          "time": "4:45 PM",
+          "durationMins": 15,
+          "title": "Field BP & Cage Stations",
+          "details": "Coaches: Layhew, Clayton. Field (BP, BP, Bunts) | Cages (Machine, Front Toss, Red Machine)."
+        },
+        {
+          "segmentNumber": 8,
+          "time": "5:00 PM",
+          "durationMins": 18,
+          "title": "Group 1 Cages / Hitting Rotations",
+          "details": "Coaches: Layhew, Clayton. Players: Smith, Guyton, Nyveen, Drake, Hudson, Setrum. Machine work in cages. Rosser live in cages."
+        },
+        {
+          "segmentNumber": 13,
+          "time": "5:20 PM",
+          "durationMins": 18,
+          "title": "Group 2 Shag & Live Cages",
+          "details": "Staff lead. Players: Rosser, Gutierrez, Warner, Leonard, Adam, Jones. Shag duty on field. Rosser live in cages."
+        },
+        {
+          "segmentNumber": 17,
+          "time": "5:40 PM",
+          "durationMins": 18,
+          "title": "Group 3 Field Stations (2 Players per station)",
+          "details": "Coaches: Pierce, Williams, Dittoe, Maas. Players: Gibbs, Absmeier, Aldridge, Harper, Hogan, Coffman, Setrum, Roman, West. Stations: 1. BP Machine (PO Feed) | 2. Rest/Arm Care | 3. BP Arm | 4. Rest/Arm Care | 5. Bunt off machine (Williams, Maas). Aldridge live in cages."
+        }
       ]
     },
     {
-      "drillNumber": 2,
-      "tasks": [
-        { "position": "Pitchers/3B/1B/2B", "drill": "Bunt Communication", "coach": "Pitching Coach", "description": "Players rehearse bunt defense communication, assigning roles and ensuring clarity.", "segmentTime": "7 mins" },
-        { "position": "SS", "drill": "Individual Ground Ball Work", "coach": "Infield Coach", "description": "Individual defensive repetitions for shortstops.", "segmentTime": "7 mins" },
-        { "position": "Outfield", "drill": "Fly Ball QB Drills (Infront)", "coach": "Outfield", "description": "Outfielders practice catching fly balls focusing on footwork, tracking, and communication.", "segmentTime": "7 mins" },
-        { "position": "Catchers", "drill": "Blocking Drills", "coach": "Catching Coach", "description": "Focuses on catchers improving technique and reaction for blocking pitches.", "segmentTime": "7 mins" }
+      "dayId": "tuesday",
+      "dayName": "Tuesday, March 31st",
+      "scheduleOverview": "Game Day vs Tomball Kings & @ Concordia",
+      "events": [
+        {
+          "time": "10:10 AM",
+          "title": "Couture in Ray Team Room (10 mins after bell)",
+          "type": "meeting"
+        },
+        {
+          "time": "3:30 PM",
+          "title": "Setrum short box / spin offspeed",
+          "type": "practice"
+        },
+        {
+          "time": "4:00 PM",
+          "title": "Dinner in the DLC",
+          "type": "event"
+        },
+        {
+          "time": "4:45 PM",
+          "title": "JV Bus Departs for Concordia",
+          "type": "travel"
+        },
+        {
+          "time": "6:30 PM",
+          "title": "Senior Recognition at Home Field",
+          "type": "event"
+        },
+        {
+          "time": "7:00 PM",
+          "title": "Varsity: Tomball Kings @ Kinkaid (Cream Top & Pants) - Pitchers: Jones / Kneale",
+          "type": "game"
+        },
+        {
+          "time": "7:00 PM",
+          "title": "JV: Kinkaid @ Concordia (Staff)",
+          "type": "game"
+        }
+      ],
+      "segments": [
+        {
+          "segmentNumber": 1,
+          "time": "4:30 PM",
+          "durationMins": 10,
+          "title": "Stretch & Throw",
+          "details": "Full team active stretch and throwing progression."
+        },
+        {
+          "segmentNumber": 2,
+          "time": "4:40 PM",
+          "durationMins": 20,
+          "title": "Pregame Defense (All Players including PO's)",
+          "details": "Infield/Outfield pregame defensive work."
+        },
+        {
+          "segmentNumber": 3,
+          "time": "5:00 PM",
+          "durationMins": 30,
+          "title": "Non-Starters Cage Hitting",
+          "details": "Non-starters hit in cage with Coach Layhew."
+        },
+        {
+          "segmentNumber": 5,
+          "time": "5:00 PM",
+          "durationMins": 18,
+          "title": "Outfield & DH Cage Hitting",
+          "details": "Outfielders and Designated Hitters batting rotation."
+        },
+        {
+          "segmentNumber": 7,
+          "time": "5:20 PM",
+          "durationMins": 18,
+          "title": "Infield & Catcher Cage Hitting",
+          "details": "Infielders and Catchers batting rotation."
+        },
+        {
+          "segmentNumber": 8,
+          "time": "5:38 PM",
+          "durationMins": 27,
+          "title": "Clear Field Stretch & Throw",
+          "details": "Field preparation and final warm-up."
+        },
+        {
+          "segmentNumber": 9,
+          "time": "6:05 PM",
+          "durationMins": 10,
+          "title": "Kinkaid In & Out",
+          "details": "Official pregame In & Out drills for Kinkaid."
+        },
+        {
+          "segmentNumber": 10,
+          "time": "6:15 PM",
+          "durationMins": 10,
+          "title": "Tomball Kings In & Out",
+          "details": "Visiting team In & Out drills."
+        }
       ]
     },
     {
-      "drillNumber": 3,
-      "tasks": [
-        { "position": "Pitchers/1B/2B/SS", "drill": "3-1 Plays", "coach": "Pitching Coach", "description": "Focuses on pitchers covering first base and executing 3-1 plays.", "segmentTime": "5 mins" },
-        { "position": "Outfield", "drill": "Fly Ball QB Drills (Overhead)", "coach": "Outfield", "description": "Repetition of fly ball tracking with a focus on catching under pressure.", "segmentTime": "5 mins" },
-        { "position": "3B", "drill": "Individual Ground Ball Work", "coach": "Infield Coach", "description": "Individual work for third basemen.", "segmentTime": "5 mins" },
-        { "position": "Catchers", "drill": "Pop Times to 2nd (SS)", "coach": "Catching Coach", "description": "Drills for quick transfers and accurate throws to second base.", "segmentTime": "5 mins" }
+      "dayId": "wednesday",
+      "dayName": "Wednesday, April 1st",
+      "scheduleOverview": "Full Program Defensive Drill Series (DDS)",
+      "events": [
+        {
+          "time": "3:30 PM",
+          "title": "JV Weights (Stewart)",
+          "type": "lifting"
+        },
+        {
+          "time": "4:15 PM",
+          "title": "7th Grade AOS @ Kinkaid (Purple)",
+          "type": "game"
+        },
+        {
+          "time": "4:15 PM",
+          "title": "JV Stretch & Throw",
+          "type": "practice"
+        },
+        {
+          "time": "4:35 PM",
+          "title": "JV Cage Work",
+          "type": "practice"
+        },
+        {
+          "time": "5:00 PM",
+          "title": "JV Defensive Drill Series with Varsity",
+          "type": "practice"
+        }
+      ],
+      "segments": [
+        {
+          "segmentNumber": 1,
+          "time": "3:30 PM",
+          "durationMins": 25,
+          "title": "All Players Stretch",
+          "details": "Coaches: Dittoe, Maas. Program-wide stretch and warm-up."
+        },
+        {
+          "segmentNumber": 2,
+          "time": "3:45 PM",
+          "durationMins": 15,
+          "title": "Group 1 Cages",
+          "details": "Coaches: Layhew, Davis, Clayton. Players: Drake, Roman, West. Machine work in cages. Drake, Roman, West live in cages."
+        },
+        {
+          "segmentNumber": 6,
+          "time": "4:02 PM",
+          "durationMins": 15,
+          "title": "Group 2 Shag",
+          "details": "Staff lead. Players: Rosser, Gutierrez, Warner, Leonard, Adam. Field shagging and defensive support."
+        },
+        {
+          "segmentNumber": 10,
+          "time": "4:19 PM",
+          "durationMins": 15,
+          "title": "Group 3 Field Stations",
+          "details": "Coaches: Pierce, Williams, Dittoe, Davis, Maas, Clayton, Layhew. Players: Smith, Guyton, Nyveen, Drake, Hudson, Gibbs, Absmeier, Aldridge, Harper, Hogan, Coffman. Stations: 1. BP Machine | 2. Rest/Arm Care | 3. BP Arm | 4. Rest/Arm Care | 5. Bunt off Machine (Williams, Maas)."
+        },
+        {
+          "segmentNumber": 13,
+          "time": "4:34 PM",
+          "durationMins": 26,
+          "title": "Throw & Set Up for DDS",
+          "details": "Staff and Players lead. Field setup and team positioning for Defensive Drill Series."
+        },
+        {
+          "segmentNumber": 14,
+          "time": "5:00 PM",
+          "durationMins": 60,
+          "title": "Entire Program Defensive Drill Series (DDS)",
+          "details": "12-Drill Defensive Series executed program-wide in 5-minute segments."
+        }
       ]
     },
     {
-      "drillNumber": 4,
-      "tasks": [
-        { "position": "Pitchers/1B/3B", "drill": "3-1, 4-1 Catcher Backing Up", "coach": "Pitching Coach", "description": "Drills for coordinating plays with emphasis on catchers backing up.", "segmentTime": "6 mins" },
-        { "position": "Outfield", "drill": "Fly Ball Communication", "coach": "Outfield", "description": "Emphasizes clear communication between outfielders when calling for fly balls.", "segmentTime": "6 mins" },
-        { "position": "SS/3B", "drill": "Grounder in the Hole", "coach": "Infield Coach", "description": "Handling grounders in the hole between SS and 3B.", "segmentTime": "6 mins" },
-        { "position": "Catchers", "drill": "Catcher Backing Up", "coach": "Catching Coach", "description": "Emphasizes proper positioning for catchers backing up bases.", "segmentTime": "6 mins" }
-      ]
+      "dayId": "thursday",
+      "dayName": "Thursday, April 2nd",
+      "scheduleOverview": "Game Day vs Twelve & John Cooper / JV vs Northside",
+      "events": [
+        {
+          "time": "4:00 PM",
+          "title": "Varsity Dinner outside the locker room",
+          "type": "event"
+        },
+        {
+          "time": "4:00 PM",
+          "title": "JV: Northside @ Kinkaid (4:00 - 5:50 PM) - Coach Whitman",
+          "type": "game"
+        },
+        {
+          "time": "4:15 PM",
+          "title": "8th Grade Purple: John Cooper @ Kinkaid",
+          "type": "game"
+        },
+        {
+          "time": "4:45 PM",
+          "title": "Varsity Cage Work",
+          "type": "practice"
+        },
+        {
+          "time": "5:40 PM",
+          "title": "Varsity Active Stretch",
+          "type": "practice"
+        },
+        {
+          "time": "5:50 PM",
+          "title": "Varsity Throw on Field",
+          "type": "practice"
+        },
+        {
+          "time": "6:05 PM",
+          "title": "Kinkaid In & Out",
+          "type": "practice"
+        },
+        {
+          "time": "6:15 PM",
+          "title": "Twelve In & Out / Starters Cuts in Cages",
+          "type": "practice"
+        },
+        {
+          "time": "6:30 PM",
+          "title": "Varsity: Twelve @ Kinkaid (Cream Top & Pants) - Pitcher: Setrum",
+          "type": "game"
+        }
+      ],
+      "segments": []
     },
     {
-      "drillNumber": 5,
-      "tasks": [
-        { "position": "Pitchers/2B/SS/3B", "drill": "Pick Plays; Rundowns", "coach": "Pitching Coach", "description": "Practices pickoff plays and managing rundowns efficiently.", "segmentTime": "8 mins" },
-        { "position": "Outfield", "drill": "Ground Ball Communication", "coach": "Outfield", "description": "Outfielders practice communication when fielding ground balls.", "segmentTime": "8 mins" },
-        { "position": "1B", "drill": "Individual Ground Ball Work", "coach": "Infield Coach", "description": "Individual reps for first basemen.", "segmentTime": "8 mins" },
-        { "position": "Pitchers & Catchers", "drill": "Wild Pitch Coverage at the Plate", "coach": "Catching Coach", "description": "Covering wild pitches and plays at home plate.", "segmentTime": "8 mins" }
-      ]
+      "dayId": "friday",
+      "dayName": "Friday, April 3rd",
+      "scheduleOverview": "Open Cages & Flatgrounds",
+      "events": [
+        {
+          "time": "10:00 - 11:00 AM",
+          "title": "Open Cages for any Varsity player in town (Coach Maas)",
+          "type": "practice"
+        }
+      ],
+      "segments": []
     },
     {
-      "drillNumber": 6,
-      "tasks": [
-        { "position": "Pitchers & Catchers", "drill": "Squeeze Plays", "coach": "Pitching Coach", "description": "Defensive strategies for handling squeeze plays at home plate.", "segmentTime": "5 mins" },
-        { "position": "Outfield", "drill": "Clock Fly Ball Drill", "coach": "Outfield", "description": "Outfielders practice tracking using a clock system for positioning.", "segmentTime": "5 mins" },
-        { "position": "SS/2B", "drill": "Double Play Turn Drills", "coach": "Infield Coach", "description": "Double play footwork and feeds for middle infielders.", "segmentTime": "5 mins" },
-        { "position": "1B/3B", "drill": "Foul Pop-Ups with Machine", "coach": "Infield Coach", "description": "Foul pop-up tracking using a pitching machine.", "segmentTime": "5 mins" }
-      ]
-    },
-    {
-      "drillNumber": 7,
-      "tasks": [
-        { "position": "Infield", "drill": "Slow Rollers Play at 1B", "coach": "Infield Coach", "description": "Executing bare-hand plays and slow rollers.", "segmentTime": "5 mins" },
-        { "position": "Outfield", "drill": "Fly Ball Clock Drill", "coach": "Outfield", "description": "Outfield tracking drill.", "segmentTime": "5 mins" },
-        { "position": "Catchers", "drill": "Fly Balls", "coach": "Catching Coach", "description": "Catchers practice catching high pop-ups and fly balls.", "segmentTime": "5 mins" }
-      ]
-    },
-    {
-      "drillNumber": 8,
-      "tasks": [
-        { "position": "Outfield", "drill": "Water and Teaching Period", "coach": "Outfield", "description": "Hydration and mental/physical recovery period.", "segmentTime": "4 mins" },
-        { "position": "Infield", "drill": "Fungo Infield In, Force Tags at Plate", "coach": "Infield Coach", "description": "Infielders simulate in-game force and tag plays at home plate.", "segmentTime": "6 mins" },
-        { "position": "Catchers", "drill": "Receive and Block the Plate", "coach": "Catching Coach", "description": "Drill for receiving throws and blocking the plate during tag plays.", "segmentTime": "6 mins" }
-      ]
-    },
-    {
-      "drillNumber": 9,
-      "tasks": [
-        { "position": "Pitchers & SS", "drill": "Inside Move", "coach": "Pitching Coach", "description": "Pitchers practice the inside pickoff move to second base with the shortstop.", "segmentTime": "5 mins" },
-        { "position": "2B", "drill": "Individual Ground Ball Work", "coach": "Infield Coach", "description": "Individual ground ball repetitions for second basemen.", "segmentTime": "5 mins" },
-        { "position": "Outfield", "drill": "Throw with Partner", "coach": "Outfield", "description": "Improving throwing mechanics, accuracy, and strength.", "segmentTime": "5 mins" },
-        { "position": "Catchers/1B/3B", "drill": "Pop-Up Communication", "coach": "Catching Coach", "description": "Practices communication for catching pop-ups between catchers and corners.", "segmentTime": "5 mins" }
-      ]
-    },
-    {
-      "drillNumber": 10,
-      "tasks": [
-        { "position": "Infield", "drill": "Bunt Coverage", "coach": "Infield Coach", "description": "Team bunt defense execution.", "segmentTime": "5 mins" },
-        { "position": "Outfield", "drill": "Throw Through Cut", "coach": "Outfield", "description": "Practicing throws through the cut-off man on long throws.", "segmentTime": "5 mins" }
-      ]
-    },
-    {
-      "drillNumber": 11,
-      "tasks": [
-        { "position": "Pitchers/1B/SS/2B", "drill": "Timing Back Pick with Rundowns", "coach": "Pitching Coach", "description": "Executing timed back picks and transitioning into rundowns.", "segmentTime": "6 mins" },
-        { "position": "Outfield/3B", "drill": "Throws to Third from Center", "coach": "Outfield", "description": "Accurate, strong throws from outfield to third base.", "segmentTime": "6 mins" },
-        { "position": "Catchers", "drill": "Framing", "coach": "Catching Coach", "description": "Focuses on framing pitches effectively to present strikes.", "segmentTime": "6 mins" },
-        { "position": "Infield", "drill": "Infield Back-Pick Footwork", "coach": "Infield Coach", "description": "Infielders coordinating back-pick mechanics.", "segmentTime": "6 mins" }
-      ]
-    },
-    {
-      "drillNumber": 12,
-      "tasks": [
-        { "position": "Outfield", "drill": "Fly Ball Communication with SS/2B", "coach": "Outfield", "description": "Communication with SS and 2B on gap fly balls.", "segmentTime": "5 mins" },
-        { "position": "Pitchers/Catchers/1B/3B", "drill": "Pick-Offs; Missed Bunt/Pitchout/PFP", "coach": "Pitching Coach", "description": "Specialized pitcher-fielder practice situations.", "segmentTime": "5 mins" },
-        { "position": "Infield", "drill": "Infield Gap Communication & Situations", "coach": "Infield Coach", "description": "Infielders review cutoff alignments and special situational plays.", "segmentTime": "5 mins" }
-      ]
+      "dayId": "saturday",
+      "dayName": "Saturday, April 4th",
+      "scheduleOverview": "Open Cages & Flatgrounds",
+      "events": [
+        {
+          "time": "10:00 - 11:00 AM",
+          "title": "Open Cages for any Varsity player in town (Coach Maas)",
+          "type": "practice"
+        }
+      ],
+      "segments": []
     }
   ]
 }
