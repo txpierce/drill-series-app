@@ -11,7 +11,6 @@
         background: #ffffff !important;
         color: #000000 !important;
       }
-      /* Hide web navigation chrome, headers, inputs, and buttons when printing */
       header, .filter-btn, #dashboard-date-box, #twib-timer-box, #drill-timer-box, #bp-timer-box, button, select, label, .no-print {
         display: none !important;
       }
@@ -30,7 +29,6 @@
         color: #000000 !important;
         text-shadow: none !important;
       }
-      /* Clean name badge colors for high-contrast PDF printouts */
       .bg-emerald-950\/90, .bg-emerald-950 {
         background-color: #dcfce7 !important;
         color: #15803d !important;
@@ -336,7 +334,7 @@
         return;
       }
 
-      const currentDay = twibData.days[selectedDashboardDayIndex] || twibData.days;
+      const currentDay = twibData.days[selectedDashboardDayIndex] || twibData.days[0];
 
       const dayOptions = twibData.days.map((d, idx) => `
         <option value="${idx}" ${idx === selectedDashboardDayIndex ? 'selected' : ''}>${d.dayName}</option>
@@ -385,7 +383,7 @@
           d.events.filter(e => e.type === 'game').forEach(g => {
             weeklyGamesHtml += `
               <div class="flex items-center justify-between bg-purple-950/60 border border-purple-800/60 p-2.5 rounded-lg text-xs">
-                <span class="font-bold text-amber-400 min-w-[90px]">${d.dayName.split(',')}</span>
+                <span class="font-bold text-amber-400 min-w-[90px]">${d.dayName.split(',')[0]}</span>
                 <span class="font-mono text-purple-200">${g.time}</span>
                 <span class="font-semibold text-slate-100 flex-1 text-right pl-2">${highlightNames(g.title)}</span>
               </div>
@@ -485,11 +483,11 @@
     // --- TWIB TIMER FUNCTIONS ---
     function initTWIBTimerForSelectedDay() {
       if (!twibData || !twibData.days) return;
-      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days;
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
       twibCurrentSegIndex = 0;
 
       if (currentDay.segments && currentDay.segments.length > 0) {
-        const firstSeg = currentDay.segments;
+        const firstSeg = currentDay.segments[0];
         twibSeconds = (firstSeg.durationMins || 5) * 60;
       } else {
         twibSeconds = 0;
@@ -499,7 +497,7 @@
 
     function updateTWIBTimerDisplay() {
       if (!twibData || !twibData.days) return;
-      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days;
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
       const segments = currentDay.segments || [];
 
       const minutes = Math.floor(twibSeconds / 60);
@@ -517,7 +515,7 @@
         const seg = segments[twibCurrentSegIndex];
         if (segNameElem) segNameElem.textContent = seg.title;
         if (indicatorElem) indicatorElem.textContent = `Seg ${twibCurrentSegIndex + 1} of ${segments.length}`;
-        if (titleElem) titleElem.textContent = `TWIB Timer (${currentDay.dayName.split(',')})`;
+        if (titleElem) titleElem.textContent = `TWIB Timer (${currentDay.dayName.split(',')[0]})`;
       } else {
         if (segNameElem) segNameElem.textContent = "No Segments";
         if (indicatorElem) indicatorElem.textContent = `0 of 0`;
@@ -528,7 +526,7 @@
     function toggleTWIBTimer() {
       const btn = document.getElementById('twib-start-pause-btn');
       if (!twibData || !twibData.days) return;
-      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days;
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
       const segments = currentDay.segments || [];
 
       if (segments.length === 0) {
@@ -578,7 +576,7 @@
 
     function changeTWIBSegment(direction) {
       if (!twibData || !twibData.days) return;
-      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days;
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
       const segments = currentDay.segments || [];
       if (segments.length === 0) return;
 
@@ -590,7 +588,7 @@
     function loadTWIBTimerSegment(segIndex) {
       twibCurrentSegIndex = segIndex;
       if (!twibData || !twibData.days) return;
-      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days;
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
       const segments = currentDay.segments || [];
       if (segments[segIndex]) {
         twibSeconds = (segments[segIndex].durationMins || 5) * 60;
@@ -624,7 +622,7 @@
         <option value="${idx}" ${idx === selectedTWIBDayIndex ? 'selected' : ''}>${d.dayName}</option>
       `).join('');
 
-      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days;
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
 
       let eventsHtml = '';
       if (currentDay.events && currentDay.events.length > 0) {
@@ -750,6 +748,7 @@
       return ordered;
     }
 
+    // --- DRILL TABS (All Drills, Pitching Coach, Catching Coach, Infield Coach, Outfield) ---
     function renderContent() {
       if (currentTab === 'Dashboard') {
         renderDashboard();
@@ -806,6 +805,7 @@
         return;
       }
 
+      // Render 12-Drill Sequential Practice Series (All Drills, Pitching Coach, Catching Coach, Infield Coach, Outfield)
       const orderedDrills = getOrderedDrills();
 
       orderedDrills.forEach((drillBlock, listPosition) => {
@@ -910,7 +910,7 @@
       }
 
       if(originalDrills.length > 0) {
-        const activeDrill = getOrderedDrills();
+        const activeDrill = getOrderedDrills()[0];
         const titleElem = document.getElementById('timer-title');
         const indicatorElem = document.getElementById('current-drill-indicator');
         if (titleElem) titleElem.textContent = `Drill ${activeDrill.drillNumber} Segment Timer`;
@@ -1036,7 +1036,7 @@
                 
                 bpCurrentGroupIndex = 0;
                 bpPhase = 'group';
-                bpGroupSeconds = bpGroups.minutes * 60;
+                bpGroupSeconds = bpGroups[0].minutes * 60;
                 bpRotationSeconds = rInputMins * 60;
                 updateBPDisplay();
                 alert('All Batting Practice Groups Completed!');
@@ -1061,7 +1061,7 @@
       bpCurrentGroupIndex = 0;
       bpPhase = 'group';
       let rInput = parseInt(document.getElementById('bp-rotation-input').value) || 5;
-      bpGroupSeconds = bpGroups.minutes * 60;
+      bpGroupSeconds = bpGroups[0].minutes * 60;
       bpRotationSeconds = rInput * 60;
 
       document.getElementById('bp-start-pause-btn').textContent = 'Start BP';
