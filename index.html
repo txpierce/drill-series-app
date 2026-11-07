@@ -8,7 +8,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen bg-gradient-to-b from-purple-950/60 via-slate-950 to-slate-950">
   <div class="max-w-4xl mx-auto p-4 sm:p-6">
-    <!-- Header & Interactive Segment Timer (Kinkaid Purple & Gold Theme) -->
+    <!-- Header & Info/Timer Boxes -->
     <header class="bg-purple-950/90 border border-purple-800/80 text-white p-6 rounded-2xl shadow-2xl mb-6 backdrop-blur-sm">
       <div class="flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
@@ -18,8 +18,39 @@
           <p class="text-purple-200/80 text-sm mt-1">Practice flow, daily schedule dashboard, TWIB updates, and multi-group timers.</p>
         </div>
 
-        <!-- Practice Segment Timer Box (Drills) -->
-        <div id="drill-timer-box" class="bg-slate-950/90 border border-purple-700/60 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[300px]">
+        <!-- BOX 1: DASHBOARD DATE BOX (Shown ONLY on Dashboard tab) -->
+        <div id="dashboard-date-box" class="bg-slate-950/90 border border-amber-400/60 p-5 rounded-xl flex flex-col items-center shadow-inner min-w-[300px]">
+          <div class="text-xs uppercase tracking-wider text-amber-400 font-bold mb-1">📅 Today's Date</div>
+          <div class="text-xl sm:text-2xl font-black text-amber-300 tracking-wide text-center my-1" id="dashboard-full-date-display">
+            <!-- Dynamically populated via JS -->
+          </div>
+          <div class="text-xs text-purple-200/80 font-semibold mt-1">Kinkaid Athletics Calendar</div>
+        </div>
+
+        <!-- BOX 2: TWIB SEGMENT TIMER BOX (Shown ONLY on TWIB tab) -->
+        <div id="twib-timer-box" class="hidden bg-slate-950/90 border border-amber-500/60 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[320px]">
+          <div class="text-xs uppercase tracking-wider text-amber-400 font-bold mb-1 text-center" id="twib-timer-title">TWIB Segment Timer</div>
+          <div class="text-3xl font-mono font-black text-amber-300 tracking-widest my-1" id="twib-timer-display">00:00</div>
+          
+          <div class="flex items-center gap-2 my-1 text-xs text-purple-200">
+            <span>Segment:</span>
+            <span id="twib-segment-name-display" class="font-bold text-amber-300 text-center max-w-[200px] truncate">Select Day</span>
+          </div>
+
+          <div class="flex items-center gap-2 mt-2 w-full justify-center">
+            <button onclick="toggleTWIBTimer()" id="twib-start-pause-btn" class="bg-amber-500 hover:bg-amber-400 text-purple-950 text-xs font-black px-4 py-1.5 rounded-lg shadow transition">Start TWIB</button>
+            <button onclick="resetTWIBTimer()" class="bg-purple-900/80 hover:bg-purple-800 text-xs px-3 py-1.5 rounded font-semibold text-purple-200 border border-purple-700/50">Reset</button>
+          </div>
+          
+          <div class="flex items-center justify-between w-full mt-3 pt-2 border-t border-purple-900/80 text-xs text-purple-300">
+            <button onclick="changeTWIBSegment(-1)" class="hover:text-amber-300">&larr; Prev Seg</button>
+            <span id="twib-segment-indicator" class="font-semibold text-amber-300/90">Segment 0 of 0</span>
+            <button onclick="changeTWIBSegment(1)" class="hover:text-amber-300">Next Seg &rarr;</button>
+          </div>
+        </div>
+
+        <!-- BOX 3: PRACTICE DRILL SEGMENT TIMER BOX (Shown ONLY on Drill tabs) -->
+        <div id="drill-timer-box" class="hidden bg-slate-950/90 border border-purple-700/60 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[300px]">
           <div class="text-xs uppercase tracking-wider text-amber-400 font-bold mb-1" id="timer-title">Drill 1 Segment Timer</div>
           <div class="text-4xl font-mono font-black text-amber-300 tracking-widest my-1" id="timer-display">05:00</div>
           
@@ -43,7 +74,7 @@
           </div>
         </div>
 
-        <!-- Batting Practice Timer Box (Hidden by default) -->
+        <!-- BOX 4: BATTING PRACTICE TIMER BOX (Shown ONLY on Batting Practice tab) -->
         <div id="bp-timer-box" class="hidden bg-slate-950/90 border border-amber-500/60 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[320px]">
           <div class="text-xs uppercase tracking-wider text-amber-400 font-bold mb-1" id="bp-timer-title">Batting Practice (Group 1)</div>
           
@@ -73,9 +104,9 @@
       </div>
     </header>
 
-    <!-- Navigation Tabs (Kinkaid Purple & Gold Styling) -->
+    <!-- Navigation Tabs -->
     <div class="flex flex-wrap gap-2 mb-6">
-      <button onclick="switchTab('Dashboard')" class="filter-btn bg-amber-500 text-purple-950 font-black px-4 py-2 rounded-xl text-sm shadow-lg shadow-purple-950/50 border border-amber-300 transition">📊 Dashboard</button>
+      <button onclick="switchTab('Dashboard')" class="filter-btn bg-amber-500 text-purple-950 font-black px-4 py-2 rounded-xl text-sm shadow-lg border border-amber-300 transition">📊 Dashboard</button>
       <button onclick="switchTab('TWIB')" class="filter-btn bg-purple-950/80 text-amber-300 border border-purple-800 px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-purple-900 transition">📅 TWIB</button>
       <button onclick="switchTab('All')" class="filter-btn bg-purple-950/80 text-purple-200 border border-purple-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-purple-900 transition">All Drills</button>
       <button onclick="switchTab('Pitching Coach')" class="filter-btn bg-purple-950/80 text-purple-200 border border-purple-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-purple-900 transition">Pitching Coach</button>
@@ -95,7 +126,7 @@
     let originalDrills = [];
     let twibData = null;
     let selectedTWIBDayIndex = 0;
-    let selectedDashboardDayIndex = 1; // Defaults to Tuesday (Game Day)
+    let selectedDashboardDayIndex = 0;
     let timerInterval = null;
     let customSegmentMins = 5;
     let totalSeconds = 300; 
@@ -103,6 +134,12 @@
     let currentActiveIndex = 0; 
     let audioCtx = null;
     let currentTab = 'Dashboard';
+
+    // TWIB Timer State
+    let twibCurrentSegIndex = 0;
+    let twibSeconds = 0;
+    let twibTimerInterval = null;
+    let twibIsRunning = false;
 
     // BP Timer Variables (10 Distinct Groups)
     let bpGroups = [
@@ -124,6 +161,27 @@
     let bpPhase = 'group'; 
     let bpInterval = null;
     let bpIsRunning = false;
+
+    // Helper: Map today's actual day of week to TWIB day index
+    function getTodayDayIndex() {
+      const day = new Date().getDay(); // 0 = Sun, 1 = Mon, 2 = Tue, 3 = Wed, 4 = Thu, 5 = Fri, 6 = Sat
+      if (day === 1) return 0; // Monday
+      if (day === 2) return 1; // Tuesday
+      if (day === 3) return 2; // Wednesday
+      if (day === 4) return 3; // Thursday
+      if (day === 5) return 4; // Friday
+      if (day === 6) return 5; // Saturday
+      return 0; // Sunday -> default to Monday
+    }
+
+    // Set today's date display
+    function setupDashboardDate() {
+      const now = new Date();
+      const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+      const formattedDate = now.toLocaleDateString('en-US', options);
+      const elem = document.getElementById('dashboard-full-date-display');
+      if (elem) elem.textContent = formattedDate;
+    }
 
     function playAlertSound(type = 'warning') {
       try {
@@ -169,6 +227,13 @@
     }
 
     async function loadData() {
+      // Auto-match current day of week
+      const autoDayIndex = getTodayDayIndex();
+      selectedDashboardDayIndex = autoDayIndex;
+      selectedTWIBDayIndex = autoDayIndex;
+
+      setupDashboardDate();
+
       try {
         const response = await fetch('data.json');
         const data = await response.json();
@@ -180,6 +245,7 @@
       try {
         const twibRes = await fetch('twib.json');
         twibData = await twibRes.json();
+        initTWIBTimerForSelectedDay();
       } catch(e) {
         console.log("Error loading twib.json:", e);
       }
@@ -314,7 +380,7 @@
             <!-- Active Day Status Banner -->
             <div class="mt-4 flex flex-wrap items-center justify-between gap-3 bg-purple-950/80 p-4 rounded-xl border border-purple-800">
               <div>
-                <span class="text-xs text-purple-300 uppercase font-bold tracking-wider">Active Date View</span>
+                <span class="text-xs text-purple-300 uppercase font-bold tracking-wider">Active View</span>
                 <h3 class="text-lg font-black text-amber-300">${currentDay.dayName}</h3>
               </div>
               <div class="bg-amber-400 text-purple-950 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wide">
@@ -376,7 +442,124 @@
       renderDashboard();
     }
 
-    // --- TAB 2: TWIB ---
+    // --- TWIB TIMER FUNCTIONS ---
+    function initTWIBTimerForSelectedDay() {
+      if (!twibData || !twibData.days) return;
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
+      twibCurrentSegIndex = 0;
+
+      if (currentDay.segments && currentDay.segments.length > 0) {
+        const firstSeg = currentDay.segments[0];
+        twibSeconds = (firstSeg.durationMins || 5) * 60;
+      } else {
+        twibSeconds = 0;
+      }
+      updateTWIBTimerDisplay();
+    }
+
+    function updateTWIBTimerDisplay() {
+      if (!twibData || !twibData.days) return;
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
+      const segments = currentDay.segments || [];
+
+      const minutes = Math.floor(twibSeconds / 60);
+      const seconds = twibSeconds % 60;
+      const displayElem = document.getElementById('twib-timer-display');
+      if (displayElem) {
+        displayElem.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      }
+
+      const segNameElem = document.getElementById('twib-segment-name-display');
+      const indicatorElem = document.getElementById('twib-segment-indicator');
+      const titleElem = document.getElementById('twib-timer-title');
+
+      if (segments.length > 0 && twibCurrentSegIndex < segments.length) {
+        const seg = segments[twibCurrentSegIndex];
+        if (segNameElem) segNameElem.textContent = seg.title;
+        if (indicatorElem) indicatorElem.textContent = `Seg ${twibCurrentSegIndex + 1} of ${segments.length}`;
+        if (titleElem) titleElem.textContent = `TWIB Timer (${currentDay.dayName.split(',')[0]})`;
+      } else {
+        if (segNameElem) segNameElem.textContent = "No Segments";
+        if (indicatorElem) indicatorElem.textContent = `0 of 0`;
+        if (titleElem) titleElem.textContent = `TWIB Timer`;
+      }
+    }
+
+    function toggleTWIBTimer() {
+      const btn = document.getElementById('twib-start-pause-btn');
+      if (!twibData || !twibData.days) return;
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
+      const segments = currentDay.segments || [];
+
+      if (segments.length === 0) {
+        alert("No practice segments available for this day!");
+        return;
+      }
+
+      if (twibIsRunning) {
+        clearInterval(twibTimerInterval);
+        twibIsRunning = false;
+        if (btn) btn.textContent = 'Start TWIB';
+      } else {
+        twibIsRunning = true;
+        if (btn) btn.textContent = 'Pause TWIB';
+
+        twibTimerInterval = setInterval(() => {
+          if (twibSeconds > 0) {
+            twibSeconds--;
+            if (twibSeconds === 10) playAlertSound('warning');
+            updateTWIBTimerDisplay();
+          } else {
+            playAlertSound('complete');
+            twibCurrentSegIndex++;
+            if (twibCurrentSegIndex >= segments.length) {
+              clearInterval(twibTimerInterval);
+              twibIsRunning = false;
+              twibCurrentSegIndex = 0;
+              if (btn) btn.textContent = 'Start TWIB';
+              alert(`All practice segments completed for ${currentDay.dayName}!`);
+              initTWIBTimerForSelectedDay();
+            } else {
+              twibSeconds = (segments[twibCurrentSegIndex].durationMins || 5) * 60;
+              updateTWIBTimerDisplay();
+            }
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTWIBTimer() {
+      clearInterval(twibTimerInterval);
+      twibIsRunning = false;
+      const btn = document.getElementById('twib-start-pause-btn');
+      if (btn) btn.textContent = 'Start TWIB';
+      initTWIBTimerForSelectedDay();
+    }
+
+    function changeTWIBSegment(direction) {
+      if (!twibData || !twibData.days) return;
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
+      const segments = currentDay.segments || [];
+      if (segments.length === 0) return;
+
+      twibCurrentSegIndex = (twibCurrentSegIndex + direction + segments.length) % segments.length;
+      twibSeconds = (segments[twibCurrentSegIndex].durationMins || 5) * 60;
+      updateTWIBTimerDisplay();
+    }
+
+    function loadTWIBTimerSegment(segIndex) {
+      twibCurrentSegIndex = segIndex;
+      if (!twibData || !twibData.days) return;
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
+      const segments = currentDay.segments || [];
+      if (segments[segIndex]) {
+        twibSeconds = (segments[segIndex].durationMins || 5) * 60;
+        updateTWIBTimerDisplay();
+        alert(`Loaded "${segments[segIndex].title}" (${segments[segIndex].durationMins} mins) into TWIB Timer!`);
+      }
+    }
+
+    // --- TAB 2: TWIB VIEW ---
     function renderTWIB() {
       const container = document.getElementById('main-container');
       container.innerHTML = '';
@@ -429,14 +612,14 @@
       // Segments
       let segmentsHtml = '';
       if (currentDay.segments && currentDay.segments.length > 0) {
-        segmentsHtml = currentDay.segments.map(seg => `
+        segmentsHtml = currentDay.segments.map((seg, idx) => `
           <div class="bg-slate-950/90 border border-purple-900/80 rounded-xl p-4 space-y-2">
             <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-purple-900/80">
               <div class="flex items-center gap-2">
                 <span class="bg-purple-900/80 text-amber-300 border border-purple-700/80 font-mono text-xs font-bold px-2.5 py-0.5 rounded-md">Seg ${seg.segmentNumber}</span>
                 <span class="text-xs font-mono text-purple-200">⏱️ ${seg.time} (${seg.durationMins} mins)</span>
               </div>
-              <button onclick="loadTWIBTimer(${seg.durationMins}, '${seg.title.replace(/'/g, "\\'")}')" class="bg-amber-500 hover:bg-amber-400 text-purple-950 text-xs font-bold px-3 py-1 rounded shadow transition">
+              <button onclick="loadTWIBTimerSegment(${idx})" class="bg-amber-500 hover:bg-amber-400 text-purple-950 text-xs font-black px-3 py-1 rounded shadow transition">
                 ▶️ Load into Timer
               </button>
             </div>
@@ -478,7 +661,7 @@
           <div class="bg-purple-950/90 border border-purple-800 rounded-2xl shadow-lg p-6 space-y-6">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-purple-800">
               <label for="twib-day-select" class="text-base font-bold text-slate-100 flex items-center gap-2">
-                <span>📆</span> Select Day Schedule:
+                <span>📆</span> Select Day Practice Plan:
               </label>
               <select id="twib-day-select" onchange="changeTWIBDay(this.value)" class="bg-slate-950 border border-amber-500/60 text-amber-300 font-bold text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-amber-400 cursor-pointer shadow-inner">
                 ${dayOptions}
@@ -515,16 +698,8 @@
 
     function changeTWIBDay(idx) {
       selectedTWIBDayIndex = parseInt(idx);
+      initTWIBTimerForSelectedDay();
       renderTWIB();
-    }
-
-    function loadTWIBTimer(mins, title) {
-      customSegmentMins = mins;
-      totalSeconds = customSegmentMins * 60;
-      document.getElementById('segment-length-input').value = mins;
-      document.getElementById('timer-title').textContent = title + ' Segment Timer';
-      updateTimerDisplay();
-      alert(`Loaded "${title}" (${mins} mins) into the Practice Segment Timer box!`);
     }
 
     function getOrderedDrills() {
@@ -659,15 +834,27 @@
         }
       });
 
+      const dashDateBox = document.getElementById('dashboard-date-box');
+      const twibTimerBox = document.getElementById('twib-timer-box');
       const drillTimerBox = document.getElementById('drill-timer-box');
       const bpTimerBox = document.getElementById('bp-timer-box');
 
-      if (tabName === 'Batting Practice') {
-        drillTimerBox.classList.add('hidden');
+      // Hide all top header boxes first
+      dashDateBox.classList.add('hidden');
+      twibTimerBox.classList.add('hidden');
+      drillTimerBox.classList.add('hidden');
+      bpTimerBox.classList.add('hidden');
+
+      // Show ONLY the specific box for the active tab
+      if (tabName === 'Dashboard') {
+        dashDateBox.classList.remove('hidden');
+      } else if (tabName === 'TWIB') {
+        twibTimerBox.classList.remove('hidden');
+      } else if (tabName === 'Batting Practice') {
         bpTimerBox.classList.remove('hidden');
       } else {
+        // All Drills, Pitching Coach, Catching Coach, Infield Coach, Outfield
         drillTimerBox.classList.remove('hidden');
-        bpTimerBox.classList.add('hidden');
       }
 
       renderContent();
@@ -677,18 +864,21 @@
       const minutes = Math.floor(totalSeconds / 60);
       const seconds = totalSeconds % 60;
       const displayElem = document.getElementById('timer-display');
-      displayElem.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-      
-      if (totalSeconds <= 10 && totalSeconds > 0) {
-        displayElem.className = 'text-4xl font-mono font-black text-rose-500 tracking-widest my-1 animate-pulse';
-      } else {
-        displayElem.className = 'text-4xl font-mono font-black text-amber-300 tracking-widest my-1';
+      if (displayElem) {
+        displayElem.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        if (totalSeconds <= 10 && totalSeconds > 0) {
+          displayElem.className = 'text-4xl font-mono font-black text-rose-500 tracking-widest my-1 animate-pulse';
+        } else {
+          displayElem.className = 'text-4xl font-mono font-black text-amber-300 tracking-widest my-1';
+        }
       }
 
       if(originalDrills.length > 0) {
         const activeDrill = getOrderedDrills()[0];
-        document.getElementById('timer-title').textContent = `Drill ${activeDrill.drillNumber} Segment Timer`;
-        document.getElementById('current-drill-indicator').textContent = `Segment ${(currentActiveIndex % originalDrills.length) + 1} of ${originalDrills.length}`;
+        const titleElem = document.getElementById('timer-title');
+        const indicatorElem = document.getElementById('current-drill-indicator');
+        if (titleElem) titleElem.textContent = `Drill ${activeDrill.drillNumber} Segment Timer`;
+        if (indicatorElem) indicatorElem.textContent = `Segment ${(currentActiveIndex % originalDrills.length) + 1} of ${originalDrills.length}`;
       }
     }
 
@@ -705,22 +895,24 @@
     function updateBPDisplay() {
       const gMins = Math.floor(bpGroupSeconds / 60);
       const gSecs = bpGroupSeconds % 60;
-      document.getElementById('bp-group-display').textContent = `${String(gMins).padStart(2, '0')}:${String(gSecs).padStart(2, '0')}`;
+      const gDisplay = document.getElementById('bp-group-display');
+      if (gDisplay) gDisplay.textContent = `${String(gMins).padStart(2, '0')}:${String(gSecs).padStart(2, '0')}`;
 
       const rMins = Math.floor(bpRotationSeconds / 60);
       const rSecs = bpRotationSeconds % 60;
       const rDisplay = document.getElementById('bp-rotation-display');
-      rDisplay.textContent = `${String(rMins).padStart(2, '0')}:${String(rSecs).padStart(2, '0')}`;
+      if (rDisplay) rDisplay.textContent = `${String(rMins).padStart(2, '0')}:${String(rSecs).padStart(2, '0')}`;
 
       let currentGroupName = bpGroups[bpCurrentGroupIndex].name;
-      document.getElementById('bp-timer-title').textContent = `Batting Practice (${currentGroupName})`;
+      const titleElem = document.getElementById('bp-timer-title');
+      if (titleElem) titleElem.textContent = `Batting Practice (${currentGroupName})`;
 
       if (bpPhase === 'group') {
-        document.getElementById('bp-group-display').className = 'text-3xl font-mono font-black text-amber-300 tracking-widest my-1';
-        document.getElementById('bp-rotation-display').className = 'text-xl font-mono font-bold text-purple-400/60 tracking-wider mt-2';
+        if (gDisplay) gDisplay.className = 'text-3xl font-mono font-black text-amber-300 tracking-widest my-1';
+        if (rDisplay) rDisplay.className = 'text-xl font-mono font-bold text-purple-400/60 tracking-wider mt-2';
       } else {
-        document.getElementById('bp-group-display').className = 'text-3xl font-mono font-black text-purple-400/60 tracking-widest my-1';
-        document.getElementById('bp-rotation-display').className = 'text-xl font-mono font-bold text-amber-300 tracking-wider mt-2 animate-pulse';
+        if (gDisplay) gDisplay.className = 'text-3xl font-mono font-black text-purple-400/60 tracking-widest my-1';
+        if (rDisplay) rDisplay.className = 'text-xl font-mono font-bold text-amber-300 tracking-wider mt-2 animate-pulse';
       }
     }
 
