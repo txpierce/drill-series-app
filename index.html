@@ -5,6 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kinkaid Baseball Program</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      /* Hide web navigation chrome, headers, inputs, and buttons when printing */
+      header, .filter-btn, #dashboard-date-box, #twib-timer-box, #drill-timer-box, #bp-timer-box, button, select, label, .no-print {
+        display: none !important;
+      }
+      .max-w-4xl {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .bg-purple-950, .bg-slate-950, .bg-slate-900, .bg-purple-900, .bg-gradient-to-b, .bg-gradient-to-r {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border-color: #94a3b8 !important;
+        box-shadow: none !important;
+      }
+      h1, h2, h3, h4, span, p, div, li, td, th {
+        color: #000000 !important;
+        text-shadow: none !important;
+      }
+      /* Clean name badge colors for high-contrast PDF printouts */
+      .bg-emerald-950\/90, .bg-emerald-950 {
+        background-color: #dcfce7 !important;
+        color: #15803d !important;
+        border: 1px solid #86efac !important;
+      }
+      .bg-rose-950\/90, .bg-rose-950 {
+        background-color: #ffe4e6 !important;
+        color: #be123c !important;
+        border: 1px solid #fca5a5 !important;
+      }
+      .bg-amber-950\/90, .bg-amber-950 {
+        background-color: #fef3c7 !important;
+        color: #b45309 !important;
+        border: 1px solid #fcd34d !important;
+      }
+    }
+  </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen bg-gradient-to-b from-purple-950/60 via-slate-950 to-slate-950">
   <div class="max-w-4xl mx-auto p-4 sm:p-6">
@@ -15,7 +58,7 @@
           <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2">
             <span class="text-amber-400">⚾</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500">Kinkaid Baseball Program</span>
           </h1>
-          <p class="text-purple-200/80 text-sm mt-1">Practice flow, daily schedule dashboard, TWIB updates, and multi-group timers.</p>
+          <p class="text-purple-200/80 text-sm mt-1">Practice flow, daily schedule dashboard, TWIB updates, multi-group timers, and PDF print exports.</p>
         </div>
 
         <!-- BOX 1: DASHBOARD DATE BOX (Shown ONLY on Dashboard tab) -->
@@ -162,25 +205,27 @@
     let bpInterval = null;
     let bpIsRunning = false;
 
-    // Helper: Map today's actual day of week to TWIB day index
     function getTodayDayIndex() {
-      const day = new Date().getDay(); // 0 = Sun, 1 = Mon, 2 = Tue, 3 = Wed, 4 = Thu, 5 = Fri, 6 = Sat
+      const day = new Date().getDay();
       if (day === 1) return 0; // Monday
       if (day === 2) return 1; // Tuesday
       if (day === 3) return 2; // Wednesday
       if (day === 4) return 3; // Thursday
       if (day === 5) return 4; // Friday
       if (day === 6) return 5; // Saturday
-      return 0; // Sunday -> default to Monday
+      return 0;
     }
 
-    // Set today's date display
     function setupDashboardDate() {
       const now = new Date();
       const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
       const formattedDate = now.toLocaleDateString('en-US', options);
       const elem = document.getElementById('dashboard-full-date-display');
       if (elem) elem.textContent = formattedDate;
+    }
+
+    function triggerPrintPDF() {
+      window.print();
     }
 
     function playAlertSound(type = 'warning') {
@@ -227,7 +272,6 @@
     }
 
     async function loadData() {
-      // Auto-match current day of week
       const autoDayIndex = getTodayDayIndex();
       selectedDashboardDayIndex = autoDayIndex;
       selectedTWIBDayIndex = autoDayIndex;
@@ -261,7 +305,6 @@
 
       let result = text;
       
-      // Highlight Coaches in GREEN
       if (twibData.coaches && twibData.coaches.length > 0) {
         twibData.coaches.forEach(coach => {
           const regex = new RegExp(`\\b(${coach})\\b`, 'gi');
@@ -269,7 +312,6 @@
         });
       }
 
-      // Highlight Players in RED
       if (twibData.players && twibData.players.length > 0) {
         twibData.players.forEach(player => {
           const regex = new RegExp(`\\b(${player})\\b`, 'gi');
@@ -294,16 +336,13 @@
         return;
       }
 
-      const currentDay = twibData.days[selectedDashboardDayIndex] || twibData.days[0];
+      const currentDay = twibData.days[selectedDashboardDayIndex] || twibData.days;
 
-      // Day selector dropdown for Dashboard
       const dayOptions = twibData.days.map((d, idx) => `
         <option value="${idx}" ${idx === selectedDashboardDayIndex ? 'selected' : ''}>${d.dayName}</option>
       `).join('');
 
-      // Filter events & games
       let eventsHtml = '';
-      
       if (currentDay.events && currentDay.events.length > 0) {
         eventsHtml = currentDay.events.map(evt => {
           let badgeColor = 'bg-purple-900/80 text-purple-200 border-purple-700';
@@ -340,14 +379,13 @@
         eventsHtml = `<div class="text-xs text-purple-300/60 italic p-3">No specific games or events scheduled for this date.</div>`;
       }
 
-      // Collect all games across the entire week for the Game Center summary
       let weeklyGamesHtml = '';
       twibData.days.forEach(d => {
         if (d.events) {
           d.events.filter(e => e.type === 'game').forEach(g => {
             weeklyGamesHtml += `
               <div class="flex items-center justify-between bg-purple-950/60 border border-purple-800/60 p-2.5 rounded-lg text-xs">
-                <span class="font-bold text-amber-400 min-w-[90px]">${d.dayName.split(',')[0]}</span>
+                <span class="font-bold text-amber-400 min-w-[90px]">${d.dayName.split(',')}</span>
                 <span class="font-mono text-purple-200">${g.time}</span>
                 <span class="font-semibold text-slate-100 flex-1 text-right pl-2">${highlightNames(g.title)}</span>
               </div>
@@ -358,7 +396,7 @@
 
       container.innerHTML = `
         <div class="space-y-6">
-          <!-- Main Banner & Quick Day Selector -->
+          <!-- Main Banner & Print Controls -->
           <div class="bg-gradient-to-r from-purple-950 via-purple-900 to-slate-900 border border-amber-500/40 rounded-2xl shadow-xl p-6 text-slate-100">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-purple-800/80">
               <div>
@@ -368,12 +406,18 @@
                 <p class="text-xs text-purple-200/80 mt-1">Daily schedule, matchups, travel times, and team events at a glance.</p>
               </div>
 
-              <!-- Day Dropdown Selector -->
-              <div class="flex items-center gap-2 bg-slate-950/80 p-2 rounded-xl border border-purple-700/60">
-                <label for="dashboard-day-select" class="text-xs font-bold text-amber-300 uppercase tracking-wider">Select Day:</label>
-                <select id="dashboard-day-select" onchange="changeDashboardDay(this.value)" class="bg-purple-950 text-amber-300 font-black text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-400 border border-purple-700 cursor-pointer">
-                  ${dayOptions}
-                </select>
+              <!-- Print & Day Controls -->
+              <div class="flex items-center gap-2 flex-wrap">
+                <button onclick="triggerPrintPDF()" class="bg-amber-500 hover:bg-amber-400 text-purple-950 font-black text-xs px-3.5 py-2 rounded-xl shadow-md border border-amber-300 transition flex items-center gap-1.5">
+                  <span>🖨️</span> Print / Save PDF
+                </button>
+
+                <div class="flex items-center gap-2 bg-slate-950/80 p-2 rounded-xl border border-purple-700/60">
+                  <label for="dashboard-day-select" class="text-xs font-bold text-amber-300 uppercase tracking-wider">Day:</label>
+                  <select id="dashboard-day-select" onchange="changeDashboardDay(this.value)" class="bg-purple-950 text-amber-300 font-black text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-400 border border-purple-700 cursor-pointer">
+                    ${dayOptions}
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -391,7 +435,6 @@
 
           <!-- Schedule & Events Cards -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Left Column: Scheduled Events & Games for Selected Day -->
             <div class="md:col-span-2 bg-purple-950/80 border border-purple-800/80 rounded-2xl shadow-lg p-5 space-y-4">
               <div class="flex items-center justify-between pb-3 border-b border-purple-800/80">
                 <h3 class="text-base font-bold text-amber-300 flex items-center gap-2">
@@ -404,7 +447,6 @@
                 ${eventsHtml}
               </div>
 
-              <!-- Action Footer -->
               <div class="pt-3 border-t border-purple-900/80 flex items-center justify-between text-xs text-purple-300">
                 <span>Need detailed practice drill segments?</span>
                 <button onclick="switchTab('TWIB')" class="bg-purple-900 hover:bg-purple-800 text-amber-300 font-bold px-3 py-1.5 rounded-lg border border-purple-700 transition">
@@ -413,7 +455,6 @@
               </div>
             </div>
 
-            <!-- Right Column: Weekly Game Center Summary -->
             <div class="bg-purple-950/80 border border-purple-800/80 rounded-2xl shadow-lg p-5 space-y-4">
               <div class="pb-3 border-b border-purple-800/80">
                 <h3 class="text-base font-bold text-amber-300 flex items-center gap-2">
@@ -426,7 +467,6 @@
                 ${weeklyGamesHtml || '<div class="text-xs text-purple-300/60">No games scheduled this week.</div>'}
               </div>
 
-              <!-- General Rules Card -->
               <div class="bg-slate-950/90 p-3.5 rounded-xl border border-purple-800/80 text-xs space-y-1.5">
                 <div class="font-bold text-amber-400 uppercase tracking-wider">Locker Room & Program Note</div>
                 <p class="text-purple-200/90 leading-relaxed">Locker rooms monitored daily. Nothing on ground or seats. Minimum 2 lifts per week required.</p>
@@ -445,11 +485,11 @@
     // --- TWIB TIMER FUNCTIONS ---
     function initTWIBTimerForSelectedDay() {
       if (!twibData || !twibData.days) return;
-      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days;
       twibCurrentSegIndex = 0;
 
       if (currentDay.segments && currentDay.segments.length > 0) {
-        const firstSeg = currentDay.segments[0];
+        const firstSeg = currentDay.segments;
         twibSeconds = (firstSeg.durationMins || 5) * 60;
       } else {
         twibSeconds = 0;
@@ -459,7 +499,7 @@
 
     function updateTWIBTimerDisplay() {
       if (!twibData || !twibData.days) return;
-      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days;
       const segments = currentDay.segments || [];
 
       const minutes = Math.floor(twibSeconds / 60);
@@ -477,7 +517,7 @@
         const seg = segments[twibCurrentSegIndex];
         if (segNameElem) segNameElem.textContent = seg.title;
         if (indicatorElem) indicatorElem.textContent = `Seg ${twibCurrentSegIndex + 1} of ${segments.length}`;
-        if (titleElem) titleElem.textContent = `TWIB Timer (${currentDay.dayName.split(',')[0]})`;
+        if (titleElem) titleElem.textContent = `TWIB Timer (${currentDay.dayName.split(',')})`;
       } else {
         if (segNameElem) segNameElem.textContent = "No Segments";
         if (indicatorElem) indicatorElem.textContent = `0 of 0`;
@@ -488,7 +528,7 @@
     function toggleTWIBTimer() {
       const btn = document.getElementById('twib-start-pause-btn');
       if (!twibData || !twibData.days) return;
-      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days;
       const segments = currentDay.segments || [];
 
       if (segments.length === 0) {
@@ -538,7 +578,7 @@
 
     function changeTWIBSegment(direction) {
       if (!twibData || !twibData.days) return;
-      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days;
       const segments = currentDay.segments || [];
       if (segments.length === 0) return;
 
@@ -550,7 +590,7 @@
     function loadTWIBTimerSegment(segIndex) {
       twibCurrentSegIndex = segIndex;
       if (!twibData || !twibData.days) return;
-      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days;
       const segments = currentDay.segments || [];
       if (segments[segIndex]) {
         twibSeconds = (segments[segIndex].durationMins || 5) * 60;
@@ -573,7 +613,6 @@
         return;
       }
 
-      // General Notes
       const notesHtml = twibData.generalNotes ? twibData.generalNotes.map(note => `
         <li class="flex items-start gap-2">
           <span class="text-amber-400">📌</span>
@@ -581,14 +620,12 @@
         </li>
       `).join('') : '';
 
-      // Day Dropdown Options
       const dayOptions = twibData.days.map((d, idx) => `
         <option value="${idx}" ${idx === selectedTWIBDayIndex ? 'selected' : ''}>${d.dayName}</option>
       `).join('');
 
-      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days;
 
-      // Day Events/Games
       let eventsHtml = '';
       if (currentDay.events && currentDay.events.length > 0) {
         eventsHtml = currentDay.events.map(evt => {
@@ -609,7 +646,6 @@
         }).join('');
       }
 
-      // Segments
       let segmentsHtml = '';
       if (currentDay.segments && currentDay.segments.length > 0) {
         segmentsHtml = currentDay.segments.map((seg, idx) => `
@@ -633,7 +669,7 @@
 
       container.innerHTML = `
         <div class="space-y-6">
-          <!-- TWIB Header & Notes -->
+          <!-- TWIB Header & Print Controls -->
           <div class="bg-purple-950/90 border border-amber-500/40 rounded-2xl shadow-lg p-6">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-purple-800">
               <div>
@@ -642,10 +678,15 @@
                 </h2>
                 <p class="text-xs text-purple-200/80 mt-0.5">Weekly practice, game, and travel schedule overview.</p>
               </div>
-              <!-- Color Legend -->
-              <div class="flex items-center gap-2 text-xs">
-                <span class="bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold px-2 py-1 rounded">Coaches (Green)</span>
-                <span class="bg-rose-950 text-rose-400 border border-rose-800 font-bold px-2 py-1 rounded">Players (Red)</span>
+
+              <div class="flex items-center gap-2">
+                <button onclick="triggerPrintPDF()" class="bg-amber-500 hover:bg-amber-400 text-purple-950 font-black text-xs px-3.5 py-2 rounded-xl shadow-md border border-amber-300 transition flex items-center gap-1.5">
+                  <span>🖨️</span> Print / Save PDF
+                </button>
+                <div class="flex items-center gap-2 text-xs">
+                  <span class="bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold px-2 py-1 rounded">Coaches</span>
+                  <span class="bg-rose-950 text-rose-400 border border-rose-800 font-bold px-2 py-1 rounded">Players</span>
+                </div>
               </div>
             </div>
 
@@ -657,7 +698,6 @@
             </div>
           </div>
 
-          <!-- Day Selection & Schedule Display -->
           <div class="bg-purple-950/90 border border-purple-800 rounded-2xl shadow-lg p-6 space-y-6">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-purple-800">
               <label for="twib-day-select" class="text-base font-bold text-slate-100 flex items-center gap-2">
@@ -668,7 +708,6 @@
               </select>
             </div>
 
-            <!-- Selected Day Overview -->
             <div>
               <div class="flex items-center justify-between mb-3">
                 <h3 class="text-lg font-bold text-slate-100">${currentDay.dayName}</h3>
@@ -839,13 +878,11 @@
       const drillTimerBox = document.getElementById('drill-timer-box');
       const bpTimerBox = document.getElementById('bp-timer-box');
 
-      // Hide all top header boxes first
       dashDateBox.classList.add('hidden');
       twibTimerBox.classList.add('hidden');
       drillTimerBox.classList.add('hidden');
       bpTimerBox.classList.add('hidden');
 
-      // Show ONLY the specific box for the active tab
       if (tabName === 'Dashboard') {
         dashDateBox.classList.remove('hidden');
       } else if (tabName === 'TWIB') {
@@ -853,7 +890,6 @@
       } else if (tabName === 'Batting Practice') {
         bpTimerBox.classList.remove('hidden');
       } else {
-        // All Drills, Pitching Coach, Catching Coach, Infield Coach, Outfield
         drillTimerBox.classList.remove('hidden');
       }
 
@@ -874,7 +910,7 @@
       }
 
       if(originalDrills.length > 0) {
-        const activeDrill = getOrderedDrills()[0];
+        const activeDrill = getOrderedDrills();
         const titleElem = document.getElementById('timer-title');
         const indicatorElem = document.getElementById('current-drill-indicator');
         if (titleElem) titleElem.textContent = `Drill ${activeDrill.drillNumber} Segment Timer`;
@@ -1000,7 +1036,7 @@
                 
                 bpCurrentGroupIndex = 0;
                 bpPhase = 'group';
-                bpGroupSeconds = bpGroups[0].minutes * 60;
+                bpGroupSeconds = bpGroups.minutes * 60;
                 bpRotationSeconds = rInputMins * 60;
                 updateBPDisplay();
                 alert('All Batting Practice Groups Completed!');
@@ -1025,7 +1061,7 @@
       bpCurrentGroupIndex = 0;
       bpPhase = 'group';
       let rInput = parseInt(document.getElementById('bp-rotation-input').value) || 5;
-      bpGroupSeconds = bpGroups[0].minutes * 60;
+      bpGroupSeconds = bpGroups.minutes * 60;
       bpRotationSeconds = rInput * 60;
 
       document.getElementById('bp-start-pause-btn').textContent = 'Start BP';
