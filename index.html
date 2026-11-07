@@ -3,88 +3,89 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Baseball Practice Drill Series</title>
+  <title>Kinkaid Baseball Program</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
+<body class="bg-slate-950 text-slate-100 min-h-screen bg-gradient-to-b from-purple-950/60 via-slate-950 to-slate-950">
   <div class="max-w-4xl mx-auto p-4 sm:p-6">
-    <!-- Header & Interactive Segment Timer -->
-    <header class="bg-slate-900 border border-slate-800 text-white p-6 rounded-2xl shadow-xl mb-6">
+    <!-- Header & Interactive Segment Timer (Kinkaid Purple & Gold Theme) -->
+    <header class="bg-purple-950/90 border border-purple-800/80 text-white p-6 rounded-2xl shadow-2xl mb-6 backdrop-blur-sm">
       <div class="flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
           <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2">
-            <span>⚾</span> Practice Drill Series Tracker
+            <span class="text-amber-400">⚾</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500">Kinkaid Baseball Program</span>
           </h1>
-          <p class="text-slate-400 text-sm mt-1">Manage practice flow, auto-advancing drills, BP timers, and TWIB schedules.</p>
+          <p class="text-purple-200/80 text-sm mt-1">Practice flow, daily schedule dashboard, TWIB updates, and multi-group timers.</p>
         </div>
 
         <!-- Practice Segment Timer Box (Drills) -->
-        <div id="drill-timer-box" class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[300px]">
-          <div class="text-xs uppercase tracking-wider text-emerald-400 font-bold mb-1" id="timer-title">Drill 1 Segment Timer</div>
-          <div class="text-4xl font-mono font-black text-white tracking-widest my-1" id="timer-display">05:00</div>
+        <div id="drill-timer-box" class="bg-slate-950/90 border border-purple-700/60 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[300px]">
+          <div class="text-xs uppercase tracking-wider text-amber-400 font-bold mb-1" id="timer-title">Drill 1 Segment Timer</div>
+          <div class="text-4xl font-mono font-black text-amber-300 tracking-widest my-1" id="timer-display">05:00</div>
           
-          <div class="flex items-center gap-2 my-2 text-xs text-slate-300">
+          <div class="flex items-center gap-2 my-2 text-xs text-purple-200">
             <span>Segment Length:</span>
-            <input type="number" id="segment-length-input" value="5" min="1" max="60" onchange="updateSegmentLength(this.value)" class="w-14 bg-slate-900 border border-slate-700 text-center font-bold text-white rounded px-1.5 py-0.5 focus:outline-none focus:border-emerald-500">
+            <input type="number" id="segment-length-input" value="5" min="1" max="60" onchange="updateSegmentLength(this.value)" class="w-14 bg-purple-950/90 border border-purple-700 text-center font-bold text-amber-300 rounded px-1.5 py-0.5 focus:outline-none focus:border-amber-400">
             <span>mins</span>
           </div>
 
           <div class="flex items-center gap-2 mt-1 w-full justify-center">
-            <button onclick="adjustTime(-1)" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded font-semibold text-slate-300">-1m</button>
-            <button onclick="toggleTimer()" id="start-pause-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition">Start</button>
-            <button onclick="resetTimer()" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded font-semibold text-slate-300">Reset</button>
-            <button onclick="adjustTime(1)" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded font-semibold text-slate-300">+1m</button>
+            <button onclick="adjustTime(-1)" class="bg-purple-900/80 hover:bg-purple-800 text-xs px-2.5 py-1 rounded font-semibold text-purple-200 border border-purple-700/50">-1m</button>
+            <button onclick="toggleTimer()" id="start-pause-btn" class="bg-amber-500 hover:bg-amber-400 text-purple-950 text-xs font-black px-4 py-1.5 rounded-lg shadow transition">Start</button>
+            <button onclick="resetTimer()" class="bg-purple-900/80 hover:bg-purple-800 text-xs px-2.5 py-1 rounded font-semibold text-purple-200 border border-purple-700/50">Reset</button>
+            <button onclick="adjustTime(1)" class="bg-purple-900/80 hover:bg-purple-800 text-xs px-2.5 py-1 rounded font-semibold text-purple-200 border border-purple-700/50">+1m</button>
           </div>
           
-          <div class="flex items-center justify-between w-full mt-3 pt-2 border-t border-slate-800/80 text-xs text-slate-400">
-            <button onclick="changeDrillSegment(-1)" class="hover:text-white">&larr; Prev Drill</button>
-            <span id="current-drill-indicator" class="font-semibold text-slate-200">Segment 1 of 12</span>
-            <button onclick="changeDrillSegment(1)" class="hover:text-white">Next Drill &rarr;</button>
+          <div class="flex items-center justify-between w-full mt-3 pt-2 border-t border-purple-900/80 text-xs text-purple-300">
+            <button onclick="changeDrillSegment(-1)" class="hover:text-amber-300">&larr; Prev Drill</button>
+            <span id="current-drill-indicator" class="font-semibold text-amber-300/90">Segment 1 of 12</span>
+            <button onclick="changeDrillSegment(1)" class="hover:text-amber-300">Next Drill &rarr;</button>
           </div>
         </div>
 
         <!-- Batting Practice Timer Box (Hidden by default) -->
-        <div id="bp-timer-box" class="hidden bg-slate-950/80 border border-amber-500/50 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[320px]">
+        <div id="bp-timer-box" class="hidden bg-slate-950/90 border border-amber-500/60 p-4 rounded-xl flex flex-col items-center shadow-inner min-w-[320px]">
           <div class="text-xs uppercase tracking-wider text-amber-400 font-bold mb-1" id="bp-timer-title">Batting Practice (Group 1)</div>
           
           <div class="text-3xl font-mono font-black text-amber-300 tracking-widest my-1" id="bp-group-display">15:00</div>
-          <div class="text-xs text-slate-400">Group Time Remaining</div>
+          <div class="text-xs text-purple-300/80">Group Time Remaining</div>
           
-          <div class="text-xl font-mono font-bold text-white tracking-wider mt-2" id="bp-rotation-display">05:00</div>
-          <div class="text-xs text-amber-400/80 font-semibold">Rotation Time (Starts after Group)</div>
+          <div class="text-xl font-mono font-bold text-purple-200 tracking-wider mt-2" id="bp-rotation-display">05:00</div>
+          <div class="text-xs text-amber-400/90 font-semibold">Rotation Time (Starts after Group)</div>
 
           <!-- BP Settings -->
-          <div class="grid grid-cols-2 gap-2 my-2 text-xs text-slate-300 w-full pt-2 border-t border-slate-800">
+          <div class="grid grid-cols-2 gap-2 my-2 text-xs text-purple-200 w-full pt-2 border-t border-purple-900">
             <div class="flex flex-col items-center">
               <span>Active Groups (1-10):</span>
-              <input type="number" id="bp-total-groups-input" value="3" min="1" max="10" onchange="updateGroupCount(this.value)" class="w-14 bg-slate-900 border border-slate-700 text-center font-bold text-white rounded px-1 py-0.5 mt-1">
+              <input type="number" id="bp-total-groups-input" value="3" min="1" max="10" onchange="updateGroupCount(this.value)" class="w-14 bg-purple-950 border border-purple-700 text-center font-bold text-amber-300 rounded px-1 py-0.5 mt-1">
             </div>
             <div class="flex flex-col items-center">
               <span>Station Rot Mins:</span>
-              <input type="number" id="bp-rotation-input" value="5" min="1" max="60" onchange="updateBPSettings()" class="w-14 bg-slate-900 border border-slate-700 text-center font-bold text-white rounded px-1 py-0.5 mt-1">
+              <input type="number" id="bp-rotation-input" value="5" min="1" max="60" onchange="updateBPSettings()" class="w-14 bg-purple-950 border border-purple-700 text-center font-bold text-amber-300 rounded px-1 py-0.5 mt-1">
             </div>
           </div>
 
           <div class="flex items-center gap-2 mt-2 w-full justify-center">
-            <button onclick="toggleBPTimer()" id="bp-start-pause-btn" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition">Start BP</button>
-            <button onclick="resetBPTimer()" class="bg-slate-800 hover:bg-slate-700 text-xs px-3 py-1.5 rounded font-semibold text-slate-300">Reset</button>
+            <button onclick="toggleBPTimer()" id="bp-start-pause-btn" class="bg-amber-500 hover:bg-amber-400 text-purple-950 text-xs font-black px-5 py-1.5 rounded-lg shadow transition">Start BP</button>
+            <button onclick="resetBPTimer()" class="bg-purple-900/80 hover:bg-purple-800 text-xs px-3 py-1.5 rounded font-semibold text-purple-200 border border-purple-700/50">Reset</button>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- Filter Buttons (Tabs) -->
+    <!-- Navigation Tabs (Kinkaid Purple & Gold Styling) -->
     <div class="flex flex-wrap gap-2 mb-6">
-      <button onclick="switchTab('All')" class="filter-btn bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow hover:bg-emerald-500 transition">All Drills</button>
-      <button onclick="switchTab('Pitching Coach')" class="filter-btn bg-slate-900 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">Pitching Coach</button>
-      <button onclick="switchTab('Catching Coach')" class="filter-btn bg-slate-900 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">Catching Coach</button>
-      <button onclick="switchTab('Infield Coach')" class="filter-btn bg-slate-900 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">Infield Coach</button>
-      <button onclick="switchTab('Outfield')" class="filter-btn bg-slate-900 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">Outfield</button>
-      <button onclick="switchTab('Batting Practice')" class="filter-btn bg-slate-900 text-amber-400 border border-amber-900/50 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">Batting Practice</button>
-      <button onclick="switchTab('TWIB')" class="filter-btn bg-slate-900 text-emerald-400 border border-emerald-900/50 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition">📅 TWIB</button>
+      <button onclick="switchTab('Dashboard')" class="filter-btn bg-amber-500 text-purple-950 font-black px-4 py-2 rounded-xl text-sm shadow-lg shadow-purple-950/50 border border-amber-300 transition">📊 Dashboard</button>
+      <button onclick="switchTab('TWIB')" class="filter-btn bg-purple-950/80 text-amber-300 border border-purple-800 px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-purple-900 transition">📅 TWIB</button>
+      <button onclick="switchTab('All')" class="filter-btn bg-purple-950/80 text-purple-200 border border-purple-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-purple-900 transition">All Drills</button>
+      <button onclick="switchTab('Pitching Coach')" class="filter-btn bg-purple-950/80 text-purple-200 border border-purple-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-purple-900 transition">Pitching Coach</button>
+      <button onclick="switchTab('Catching Coach')" class="filter-btn bg-purple-950/80 text-purple-200 border border-purple-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-purple-900 transition">Catching Coach</button>
+      <button onclick="switchTab('Infield Coach')" class="filter-btn bg-purple-950/80 text-purple-200 border border-purple-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-purple-900 transition">Infield Coach</button>
+      <button onclick="switchTab('Outfield')" class="filter-btn bg-purple-950/80 text-purple-200 border border-purple-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-purple-900 transition">Outfield</button>
+      <button onclick="switchTab('Batting Practice')" class="filter-btn bg-purple-950/80 text-amber-400 border border-amber-900/50 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-purple-900 transition">Batting Practice</button>
     </div>
 
-    <!-- Main Container -->
+    <!-- Main Content Container -->
     <div id="main-container" class="space-y-4">
       <!-- Dynamically populated -->
     </div>
@@ -94,13 +95,14 @@
     let originalDrills = [];
     let twibData = null;
     let selectedTWIBDayIndex = 0;
+    let selectedDashboardDayIndex = 1; // Defaults to Tuesday (Game Day)
     let timerInterval = null;
     let customSegmentMins = 5;
     let totalSeconds = 300; 
     let isRunning = false;
     let currentActiveIndex = 0; 
     let audioCtx = null;
-    let currentTab = 'All';
+    let currentTab = 'Dashboard';
 
     // BP Timer Variables (10 Distinct Groups)
     let bpGroups = [
@@ -197,7 +199,7 @@
       if (twibData.coaches && twibData.coaches.length > 0) {
         twibData.coaches.forEach(coach => {
           const regex = new RegExp(`\\b(${coach})\\b`, 'gi');
-          result = result.replace(regex, `<span class="bg-emerald-950/80 text-emerald-400 font-bold border border-emerald-800/80 px-1.5 py-0.5 rounded text-xs inline-block my-0.5">$1</span>`);
+          result = result.replace(regex, `<span class="bg-emerald-950/90 text-emerald-400 font-bold border border-emerald-700/80 px-1.5 py-0.5 rounded text-xs inline-block my-0.5">$1</span>`);
         });
       }
 
@@ -205,20 +207,183 @@
       if (twibData.players && twibData.players.length > 0) {
         twibData.players.forEach(player => {
           const regex = new RegExp(`\\b(${player})\\b`, 'gi');
-          result = result.replace(regex, `<span class="bg-rose-950/80 text-rose-400 font-bold border border-rose-800/80 px-1.5 py-0.5 rounded text-xs inline-block my-0.5">$1</span>`);
+          result = result.replace(regex, `<span class="bg-rose-950/90 text-rose-400 font-bold border border-rose-700/80 px-1.5 py-0.5 rounded text-xs inline-block my-0.5">$1</span>`);
         });
       }
 
       return result;
     }
 
+    // --- TAB 1: DASHBOARD ---
+    function renderDashboard() {
+      const container = document.getElementById('main-container');
+      container.innerHTML = '';
+
+      if (!twibData || !twibData.days) {
+        container.innerHTML = `
+          <div class="bg-purple-950/80 border border-purple-800 rounded-2xl p-6 text-center text-purple-300">
+            No TWIB schedule data available for Dashboard display.
+          </div>
+        `;
+        return;
+      }
+
+      const currentDay = twibData.days[selectedDashboardDayIndex] || twibData.days[0];
+
+      // Day selector dropdown for Dashboard
+      const dayOptions = twibData.days.map((d, idx) => `
+        <option value="${idx}" ${idx === selectedDashboardDayIndex ? 'selected' : ''}>${d.dayName}</option>
+      `).join('');
+
+      // Filter events & games
+      let eventsHtml = '';
+      
+      if (currentDay.events && currentDay.events.length > 0) {
+        eventsHtml = currentDay.events.map(evt => {
+          let badgeColor = 'bg-purple-900/80 text-purple-200 border-purple-700';
+          let icon = '📌';
+
+          if (evt.type === 'game') {
+            badgeColor = 'bg-amber-950/90 text-amber-300 border-amber-600/80 font-bold';
+            icon = '⚾';
+          } else if (evt.type === 'meeting') {
+            badgeColor = 'bg-blue-950/90 text-blue-300 border-blue-700/80';
+            icon = '📋';
+          } else if (evt.type === 'travel') {
+            badgeColor = 'bg-purple-900/90 text-amber-300 border-amber-500/80';
+            icon = '🚌';
+          } else if (evt.type === 'lifting') {
+            badgeColor = 'bg-emerald-950/90 text-emerald-300 border-emerald-700/80';
+            icon = '🏋️';
+          } else if (evt.type === 'event') {
+            badgeColor = 'bg-yellow-950/90 text-yellow-300 border-yellow-700/80';
+            icon = '⭐';
+          }
+
+          return `
+            <div class="flex items-start sm:items-center justify-between bg-slate-950/90 border border-purple-900/80 p-3.5 rounded-xl transition hover:border-purple-700">
+              <div class="flex items-center gap-3">
+                <span class="text-base">${icon}</span>
+                <span class="font-mono text-xs font-black px-2.5 py-1 rounded border ${badgeColor}">${evt.time}</span>
+                <span class="text-sm font-bold text-slate-100">${highlightNames(evt.title)}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        eventsHtml = `<div class="text-xs text-purple-300/60 italic p-3">No specific games or events scheduled for this date.</div>`;
+      }
+
+      // Collect all games across the entire week for the Game Center summary
+      let weeklyGamesHtml = '';
+      twibData.days.forEach(d => {
+        if (d.events) {
+          d.events.filter(e => e.type === 'game').forEach(g => {
+            weeklyGamesHtml += `
+              <div class="flex items-center justify-between bg-purple-950/60 border border-purple-800/60 p-2.5 rounded-lg text-xs">
+                <span class="font-bold text-amber-400 min-w-[90px]">${d.dayName.split(',')[0]}</span>
+                <span class="font-mono text-purple-200">${g.time}</span>
+                <span class="font-semibold text-slate-100 flex-1 text-right pl-2">${highlightNames(g.title)}</span>
+              </div>
+            `;
+          });
+        }
+      });
+
+      container.innerHTML = `
+        <div class="space-y-6">
+          <!-- Main Banner & Quick Day Selector -->
+          <div class="bg-gradient-to-r from-purple-950 via-purple-900 to-slate-900 border border-amber-500/40 rounded-2xl shadow-xl p-6 text-slate-100">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-purple-800/80">
+              <div>
+                <h2 class="text-xl font-extrabold text-amber-400 tracking-wide flex items-center gap-2">
+                  <span>📊</span> Kinkaid Game Day & Events Dashboard
+                </h2>
+                <p class="text-xs text-purple-200/80 mt-1">Daily schedule, matchups, travel times, and team events at a glance.</p>
+              </div>
+
+              <!-- Day Dropdown Selector -->
+              <div class="flex items-center gap-2 bg-slate-950/80 p-2 rounded-xl border border-purple-700/60">
+                <label for="dashboard-day-select" class="text-xs font-bold text-amber-300 uppercase tracking-wider">Select Day:</label>
+                <select id="dashboard-day-select" onchange="changeDashboardDay(this.value)" class="bg-purple-950 text-amber-300 font-black text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-400 border border-purple-700 cursor-pointer">
+                  ${dayOptions}
+                </select>
+              </div>
+            </div>
+
+            <!-- Active Day Status Banner -->
+            <div class="mt-4 flex flex-wrap items-center justify-between gap-3 bg-purple-950/80 p-4 rounded-xl border border-purple-800">
+              <div>
+                <span class="text-xs text-purple-300 uppercase font-bold tracking-wider">Active Date View</span>
+                <h3 class="text-lg font-black text-amber-300">${currentDay.dayName}</h3>
+              </div>
+              <div class="bg-amber-400 text-purple-950 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wide">
+                ${currentDay.scheduleOverview || 'Schedule Overview'}
+              </div>
+            </div>
+          </div>
+
+          <!-- Schedule & Events Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Left Column: Scheduled Events & Games for Selected Day -->
+            <div class="md:col-span-2 bg-purple-950/80 border border-purple-800/80 rounded-2xl shadow-lg p-5 space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-purple-800/80">
+                <h3 class="text-base font-bold text-amber-300 flex items-center gap-2">
+                  <span>📅</span> ${currentDay.dayName} Schedule & Events
+                </h3>
+                <span class="text-xs text-purple-300 font-mono font-bold">${currentDay.events ? currentDay.events.length : 0} Events</span>
+              </div>
+
+              <div class="space-y-2.5">
+                ${eventsHtml}
+              </div>
+
+              <!-- Action Footer -->
+              <div class="pt-3 border-t border-purple-900/80 flex items-center justify-between text-xs text-purple-300">
+                <span>Need detailed practice drill segments?</span>
+                <button onclick="switchTab('TWIB')" class="bg-purple-900 hover:bg-purple-800 text-amber-300 font-bold px-3 py-1.5 rounded-lg border border-purple-700 transition">
+                  View Full TWIB Tab &rarr;
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Column: Weekly Game Center Summary -->
+            <div class="bg-purple-950/80 border border-purple-800/80 rounded-2xl shadow-lg p-5 space-y-4">
+              <div class="pb-3 border-b border-purple-800/80">
+                <h3 class="text-base font-bold text-amber-300 flex items-center gap-2">
+                  <span>🏆</span> Weekly Game Center
+                </h3>
+                <p class="text-xs text-purple-300/80 mt-0.5">All scheduled matchups for Week 9.</p>
+              </div>
+
+              <div class="space-y-2 max-h-[360px] overflow-y-auto pr-1">
+                ${weeklyGamesHtml || '<div class="text-xs text-purple-300/60">No games scheduled this week.</div>'}
+              </div>
+
+              <!-- General Rules Card -->
+              <div class="bg-slate-950/90 p-3.5 rounded-xl border border-purple-800/80 text-xs space-y-1.5">
+                <div class="font-bold text-amber-400 uppercase tracking-wider">Locker Room & Program Note</div>
+                <p class="text-purple-200/90 leading-relaxed">Locker rooms monitored daily. Nothing on ground or seats. Minimum 2 lifts per week required.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function changeDashboardDay(idx) {
+      selectedDashboardDayIndex = parseInt(idx);
+      renderDashboard();
+    }
+
+    // --- TAB 2: TWIB ---
     function renderTWIB() {
       const container = document.getElementById('main-container');
       container.innerHTML = '';
 
       if (!twibData) {
         container.innerHTML = `
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-400">
+          <div class="bg-purple-950/80 border border-purple-800 rounded-2xl p-6 text-center text-purple-300">
             No TWIB data found. Please ensure twib.json is present in your repository.
           </div>
         `;
@@ -238,23 +403,23 @@
         <option value="${idx}" ${idx === selectedTWIBDayIndex ? 'selected' : ''}>${d.dayName}</option>
       `).join('');
 
-      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days;
+      const currentDay = twibData.days[selectedTWIBDayIndex] || twibData.days[0];
 
       // Day Events/Games
       let eventsHtml = '';
       if (currentDay.events && currentDay.events.length > 0) {
         eventsHtml = currentDay.events.map(evt => {
-          let badgeColor = 'bg-slate-800 text-slate-300 border-slate-700';
-          if (evt.type === 'game') badgeColor = 'bg-amber-950/80 text-amber-400 border-amber-800';
-          if (evt.type === 'meeting') badgeColor = 'bg-blue-950/80 text-blue-400 border-blue-800';
-          if (evt.type === 'travel') badgeColor = 'bg-purple-950/80 text-purple-400 border-purple-800';
-          if (evt.type === 'lifting') badgeColor = 'bg-emerald-950/80 text-emerald-400 border-emerald-800';
+          let badgeColor = 'bg-purple-900/80 text-purple-200 border-purple-700';
+          if (evt.type === 'game') badgeColor = 'bg-amber-950/90 text-amber-300 border-amber-600/80 font-bold';
+          if (evt.type === 'meeting') badgeColor = 'bg-blue-950/90 text-blue-300 border-blue-700/80';
+          if (evt.type === 'travel') badgeColor = 'bg-purple-900/90 text-amber-300 border-amber-500/80';
+          if (evt.type === 'lifting') badgeColor = 'bg-emerald-950/90 text-emerald-300 border-emerald-700/80';
 
           return `
-            <div class="flex items-center justify-between bg-slate-950/80 border border-slate-800 p-3 rounded-xl">
+            <div class="flex items-center justify-between bg-slate-950/90 border border-purple-900/80 p-3 rounded-xl">
               <div class="flex items-center gap-3">
                 <span class="font-mono text-xs font-bold px-2 py-1 rounded border ${badgeColor}">${evt.time}</span>
-                <span class="text-sm font-semibold text-slate-200">${highlightNames(evt.title)}</span>
+                <span class="text-sm font-semibold text-slate-100">${highlightNames(evt.title)}</span>
               </div>
             </div>
           `;
@@ -265,34 +430,34 @@
       let segmentsHtml = '';
       if (currentDay.segments && currentDay.segments.length > 0) {
         segmentsHtml = currentDay.segments.map(seg => `
-          <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-4 space-y-2">
-            <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-800/80">
+          <div class="bg-slate-950/90 border border-purple-900/80 rounded-xl p-4 space-y-2">
+            <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-purple-900/80">
               <div class="flex items-center gap-2">
-                <span class="bg-emerald-900/60 text-emerald-400 border border-emerald-700/60 font-mono text-xs font-bold px-2.5 py-0.5 rounded-md">Seg ${seg.segmentNumber}</span>
-                <span class="text-xs font-mono text-slate-400">⏱️ ${seg.time} (${seg.durationMins} mins)</span>
+                <span class="bg-purple-900/80 text-amber-300 border border-purple-700/80 font-mono text-xs font-bold px-2.5 py-0.5 rounded-md">Seg ${seg.segmentNumber}</span>
+                <span class="text-xs font-mono text-purple-200">⏱️ ${seg.time} (${seg.durationMins} mins)</span>
               </div>
-              <button onclick="loadTWIBTimer(${seg.durationMins}, '${seg.title.replace(/'/g, "\\'")}')" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded font-semibold text-emerald-400 border border-slate-700 transition">
+              <button onclick="loadTWIBTimer(${seg.durationMins}, '${seg.title.replace(/'/g, "\\'")}')" class="bg-amber-500 hover:bg-amber-400 text-purple-950 text-xs font-bold px-3 py-1 rounded shadow transition">
                 ▶️ Load into Timer
               </button>
             </div>
             <h4 class="font-bold text-slate-100 text-base mt-1">${highlightNames(seg.title)}</h4>
-            <p class="text-sm text-slate-300 leading-relaxed">${highlightNames(seg.details)}</p>
+            <p class="text-sm text-purple-200/90 leading-relaxed">${highlightNames(seg.details)}</p>
           </div>
         `).join('');
       } else {
-        segmentsHtml = `<div class="text-xs text-slate-500 italic p-3">No specific drill segments scheduled for this day.</div>`;
+        segmentsHtml = `<div class="text-xs text-purple-300/60 italic p-3">No specific drill segments scheduled for this day.</div>`;
       }
 
       container.innerHTML = `
         <div class="space-y-6">
           <!-- TWIB Header & Notes -->
-          <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl shadow-lg p-6">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-800">
+          <div class="bg-purple-950/90 border border-amber-500/40 rounded-2xl shadow-lg p-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-purple-800">
               <div>
-                <h2 class="text-xl font-bold text-emerald-400 tracking-wide flex items-center gap-2">
+                <h2 class="text-xl font-bold text-amber-400 tracking-wide flex items-center gap-2">
                   <span>📅</span> ${twibData.weekTitle || 'This Week in Baseball'}
                 </h2>
-                <p class="text-xs text-slate-400 mt-0.5">Weekly practice, game, and travel schedule overview.</p>
+                <p class="text-xs text-purple-200/80 mt-0.5">Weekly practice, game, and travel schedule overview.</p>
               </div>
               <!-- Color Legend -->
               <div class="flex items-center gap-2 text-xs">
@@ -301,21 +466,21 @@
               </div>
             </div>
 
-            <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800">
+            <div class="bg-slate-950/80 p-4 rounded-xl border border-purple-900/80">
               <h3 class="text-xs uppercase font-bold text-amber-400 tracking-wider mb-2">Weekly Notes & Requirements</h3>
-              <ul class="text-sm text-slate-300 space-y-1.5">
+              <ul class="text-sm text-purple-200 space-y-1.5">
                 ${notesHtml}
               </ul>
             </div>
           </div>
 
           <!-- Day Selection & Schedule Display -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-lg p-6 space-y-6">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+          <div class="bg-purple-950/90 border border-purple-800 rounded-2xl shadow-lg p-6 space-y-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-purple-800">
               <label for="twib-day-select" class="text-base font-bold text-slate-100 flex items-center gap-2">
                 <span>📆</span> Select Day Schedule:
               </label>
-              <select id="twib-day-select" onchange="changeTWIBDay(this.value)" class="bg-slate-950 border border-emerald-500/60 text-emerald-400 font-bold text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-400 cursor-pointer shadow-inner">
+              <select id="twib-day-select" onchange="changeTWIBDay(this.value)" class="bg-slate-950 border border-amber-500/60 text-amber-300 font-bold text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-amber-400 cursor-pointer shadow-inner">
                 ${dayOptions}
               </select>
             </div>
@@ -324,12 +489,12 @@
             <div>
               <div class="flex items-center justify-between mb-3">
                 <h3 class="text-lg font-bold text-slate-100">${currentDay.dayName}</h3>
-                <span class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full font-semibold border border-slate-700">${currentDay.scheduleOverview || 'Schedule'}</span>
+                <span class="text-xs bg-purple-900 text-amber-300 px-3 py-1 rounded-full font-semibold border border-purple-700">${currentDay.scheduleOverview || 'Schedule'}</span>
               </div>
 
               ${currentDay.events && currentDay.events.length > 0 ? `
                 <div class="space-y-2 mb-6">
-                  <h4 class="text-xs uppercase font-bold text-slate-400 tracking-wider">Scheduled Events & Games</h4>
+                  <h4 class="text-xs uppercase font-bold text-purple-300 tracking-wider">Scheduled Events & Games</h4>
                   <div class="grid grid-cols-1 gap-2">
                     ${eventsHtml}
                   </div>
@@ -337,7 +502,7 @@
               ` : ''}
 
               <div class="space-y-3">
-                <h4 class="text-xs uppercase font-bold text-slate-400 tracking-wider">Practice Segments</h4>
+                <h4 class="text-xs uppercase font-bold text-purple-300 tracking-wider">Practice Segments</h4>
                 <div class="space-y-3">
                   ${segmentsHtml}
                 </div>
@@ -372,6 +537,11 @@
     }
 
     function renderContent() {
+      if (currentTab === 'Dashboard') {
+        renderDashboard();
+        return;
+      }
+
       if (currentTab === 'TWIB') {
         renderTWIB();
         return;
@@ -384,36 +554,36 @@
         let groupInputsHtml = '';
         for (let i = 0; i < 10; i++) {
           groupInputsHtml += `
-            <div class="flex items-center justify-between bg-slate-900 p-3 rounded-xl border border-slate-800">
+            <div class="flex items-center justify-between bg-purple-950/80 p-3 rounded-xl border border-purple-800">
               <span class="font-bold text-amber-300 text-sm">Group ${i + 1} Time (Mins):</span>
-              <input type="number" id="group-time-${i}" value="${bpGroups[i].minutes}" min="1" max="120" onchange="updateGroupTime(${i}, this.value)" class="w-16 bg-slate-950 border border-slate-700 text-center font-bold text-white rounded px-2 py-1">
+              <input type="number" id="group-time-${i}" value="${bpGroups[i].minutes}" min="1" max="120" onchange="updateGroupTime(${i}, this.value)" class="w-16 bg-slate-950 border border-purple-700 text-center font-bold text-amber-300 rounded px-2 py-1">
             </div>
           `;
         }
 
         container.innerHTML = `
-          <div class="bg-slate-900 border border-amber-500/30 rounded-2xl shadow-lg p-6 text-slate-200">
+          <div class="bg-purple-950/90 border border-amber-500/40 rounded-2xl shadow-lg p-6 text-purple-200">
             <h2 class="text-xl font-bold text-amber-400 mb-2 flex items-center gap-2"><span>🏏</span> Batting Practice 10-Group Timer Settings</h2>
-            <p class="text-slate-400 text-sm mb-6">Configure custom durations for up to 10 distinct hitting groups below.</p>
+            <p class="text-purple-300/80 text-sm mb-6">Configure custom durations for up to 10 distinct hitting groups below.</p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-3">
-                <h3 class="font-bold text-slate-200 text-sm uppercase tracking-wide mb-2">Group Time Settings (All 10 Groups)</h3>
+                <h3 class="font-bold text-purple-100 text-sm uppercase tracking-wide mb-2">Group Time Settings (All 10 Groups)</h3>
                 <div class="space-y-2 max-h-[380px] overflow-y-auto pr-2">
                   ${groupInputsHtml}
                 </div>
               </div>
-              <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 flex flex-col justify-between">
+              <div class="bg-slate-950/90 p-5 rounded-xl border border-purple-900 flex flex-col justify-between">
                 <div>
-                  <h3 class="font-bold text-slate-200 mb-2">BP Sequential Workflow:</h3>
-                  <ul class="text-sm text-slate-400 space-y-2 list-disc pl-4">
+                  <h3 class="font-bold text-amber-300 mb-2">BP Sequential Workflow:</h3>
+                  <ul class="text-sm text-purple-200/90 space-y-2 list-disc pl-4">
                     <li>Group Timer counts down first for the active group.</li>
                     <li>Once Group Time hits 00:00, the Rotation Timer starts counting down.</li>
                     <li>When the Rotation Timer runs out, both reset and the tracker advances automatically to the next group!</li>
                   </ul>
                 </div>
-                <div class="mt-4 pt-4 border-t border-slate-800 text-center">
-                  <div class="text-sm font-semibold text-slate-300">Status: <span id="bp-status-text" class="text-amber-400">Ready</span></div>
+                <div class="mt-4 pt-4 border-t border-purple-900 text-center">
+                  <div class="text-sm font-semibold text-purple-200">Status: <span id="bp-status-text" class="text-amber-400">Ready</span></div>
                 </div>
               </div>
             </div>
@@ -435,37 +605,37 @@
         const isActive = (listPosition === 0);
 
         const card = document.createElement('div');
-        card.className = `bg-slate-900 border rounded-2xl shadow-lg p-5 transition ${isActive ? 'border-emerald-500 ring-2 ring-emerald-500/40 bg-slate-900/90' : 'border-slate-800 opacity-75'}`;
+        card.className = `bg-purple-950/80 border rounded-2xl shadow-lg p-5 transition ${isActive ? 'border-amber-400 ring-2 ring-amber-400/40 bg-purple-900/90' : 'border-purple-800/80 opacity-80'}`;
 
         let tasksHtml = filteredTasks.map((t, idx) => `
-          <div class="flex items-start justify-between py-3.5 ${idx !== filteredTasks.length - 1 ? 'border-b border-slate-800' : ''}">
+          <div class="flex items-start justify-between py-3.5 ${idx !== filteredTasks.length - 1 ? 'border-b border-purple-900/80' : ''}">
             <div class="flex items-start space-x-3.5 w-full">
-              <input type="checkbox" class="mt-1 h-5 w-5 rounded border-slate-700 bg-slate-800 text-emerald-500 focus:ring-emerald-500 cursor-pointer">
+              <input type="checkbox" class="mt-1 h-5 w-5 rounded border-purple-700 bg-slate-900 text-amber-400 focus:ring-amber-400 cursor-pointer">
               <div class="flex-1">
                 <div class="flex flex-wrap items-center justify-between gap-2">
                   <div class="flex items-center space-x-2">
-                    <span class="bg-slate-800 text-slate-300 border border-slate-700 text-xs font-bold px-2.5 py-0.5 rounded-md">${t.position}</span>
-                    <span class="text-xs text-emerald-400 font-semibold">Lead: ${t.coach}</span>
+                    <span class="bg-purple-900 text-purple-200 border border-purple-700 text-xs font-bold px-2.5 py-0.5 rounded-md">${t.position}</span>
+                    <span class="text-xs text-amber-400 font-semibold">Lead: ${t.coach}</span>
                   </div>
-                  <span class="bg-slate-800/80 text-amber-400 border border-slate-700/60 text-xs font-mono font-bold px-2.5 py-0.5 rounded-md">
+                  <span class="bg-slate-950 text-amber-300 border border-purple-800 text-xs font-mono font-bold px-2.5 py-0.5 rounded-md">
                     ⏱️ ${customSegmentMins} mins
                   </span>
                 </div>
                 <h4 class="font-semibold text-slate-100 mt-1.5">${t.drill}</h4>
-                <p class="text-sm text-slate-400 mt-0.5 leading-relaxed">${t.description}</p>
+                <p class="text-sm text-purple-200/80 mt-0.5 leading-relaxed">${t.description}</p>
               </div>
             </div>
           </div>
         `).join('');
 
         card.innerHTML = `
-          <div class="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-800 cursor-pointer" onclick="jumpToDrill(${drillBlock.originalIndex})">
-            <h3 class="text-lg font-bold ${isActive ? 'text-emerald-400' : 'text-slate-300'} tracking-wide">
+          <div class="flex items-center justify-between mb-3 pb-2.5 border-b border-purple-900/80 cursor-pointer" onclick="jumpToDrill(${drillBlock.originalIndex})">
+            <h3 class="text-lg font-bold ${isActive ? 'text-amber-300' : 'text-purple-200'} tracking-wide">
               Drill ${drillBlock.drillNumber} ${isActive ? '⭐ (ACTIVE SEGMENT)' : ''}
             </h3>
-            <span class="text-xs text-slate-400 hover:text-white">Click to make active</span>
+            <span class="text-xs text-purple-300 hover:text-amber-300">Click to make active</span>
           </div>
-          <div class="divide-y divide-slate-800">
+          <div class="divide-y divide-purple-900/80">
             ${tasksHtml}
           </div>
         `;
@@ -476,11 +646,16 @@
     function switchTab(tabName) {
       currentTab = tabName;
       document.querySelectorAll('.filter-btn').forEach(btn => {
-        let matches = btn.textContent.includes(tabName) || (tabName === 'All' && btn.textContent === 'All Drills');
-        if(matches) {
-          btn.className = `filter-btn ${tabName === 'Batting Practice' ? 'bg-amber-600 text-white' : 'bg-emerald-600 text-white'} px-4 py-2 rounded-xl text-sm font-semibold shadow transition`;
+        let isTabMatch = false;
+        if (tabName === 'Dashboard' && btn.textContent.includes('Dashboard')) isTabMatch = true;
+        else if (tabName === 'TWIB' && btn.textContent.includes('TWIB')) isTabMatch = true;
+        else if (tabName === 'All' && btn.textContent.includes('All Drills')) isTabMatch = true;
+        else if (btn.textContent.includes(tabName)) isTabMatch = true;
+
+        if (isTabMatch) {
+          btn.className = 'filter-btn bg-amber-500 text-purple-950 font-black px-4 py-2 rounded-xl text-sm shadow-lg border border-amber-300 transition';
         } else {
-          btn.className = `filter-btn bg-slate-900 ${btn.textContent.includes('Batting Practice') ? 'text-amber-400 border border-amber-900/50' : 'text-slate-300 border border-slate-800'} px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-slate-800 transition`;
+          btn.className = `filter-btn bg-purple-950/80 ${btn.textContent.includes('Batting Practice') ? 'text-amber-400 border-amber-900/50' : 'text-purple-200 border-purple-800'} px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-purple-900 transition`;
         }
       });
 
@@ -507,11 +682,11 @@
       if (totalSeconds <= 10 && totalSeconds > 0) {
         displayElem.className = 'text-4xl font-mono font-black text-rose-500 tracking-widest my-1 animate-pulse';
       } else {
-        displayElem.className = 'text-4xl font-mono font-black text-white tracking-widest my-1';
+        displayElem.className = 'text-4xl font-mono font-black text-amber-300 tracking-widest my-1';
       }
 
       if(originalDrills.length > 0) {
-        const activeDrill = getOrderedDrills();
+        const activeDrill = getOrderedDrills()[0];
         document.getElementById('timer-title').textContent = `Drill ${activeDrill.drillNumber} Segment Timer`;
         document.getElementById('current-drill-indicator').textContent = `Segment ${(currentActiveIndex % originalDrills.length) + 1} of ${originalDrills.length}`;
       }
@@ -542,9 +717,9 @@
 
       if (bpPhase === 'group') {
         document.getElementById('bp-group-display').className = 'text-3xl font-mono font-black text-amber-300 tracking-widest my-1';
-        document.getElementById('bp-rotation-display').className = 'text-xl font-mono font-bold text-slate-500 tracking-wider mt-2';
+        document.getElementById('bp-rotation-display').className = 'text-xl font-mono font-bold text-purple-400/60 tracking-wider mt-2';
       } else {
-        document.getElementById('bp-group-display').className = 'text-3xl font-mono font-black text-slate-500 tracking-widest my-1';
+        document.getElementById('bp-group-display').className = 'text-3xl font-mono font-black text-purple-400/60 tracking-widest my-1';
         document.getElementById('bp-rotation-display').className = 'text-xl font-mono font-bold text-amber-300 tracking-wider mt-2 animate-pulse';
       }
     }
@@ -594,7 +769,7 @@
         clearInterval(bpInterval);
         bpIsRunning = false;
         btn.textContent = 'Start BP';
-        btn.className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition';
+        btn.className = 'bg-amber-500 hover:bg-amber-400 text-purple-950 text-xs font-black px-5 py-1.5 rounded-lg shadow transition';
         if(statusText) statusText.textContent = 'Paused';
       } else {
         bpIsRunning = true;
@@ -628,12 +803,12 @@
                 clearInterval(bpInterval);
                 bpIsRunning = false;
                 btn.textContent = 'Start BP';
-                btn.className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition';
+                btn.className = 'bg-amber-500 hover:bg-amber-400 text-purple-950 text-xs font-black px-5 py-1.5 rounded-lg shadow transition';
                 if(statusText) statusText.textContent = 'All BP Groups Completed';
                 
                 bpCurrentGroupIndex = 0;
                 bpPhase = 'group';
-                bpGroupSeconds = bpGroups.minutes * 60;
+                bpGroupSeconds = bpGroups[0].minutes * 60;
                 bpRotationSeconds = rInputMins * 60;
                 updateBPDisplay();
                 alert('All Batting Practice Groups Completed!');
@@ -658,11 +833,11 @@
       bpCurrentGroupIndex = 0;
       bpPhase = 'group';
       let rInput = parseInt(document.getElementById('bp-rotation-input').value) || 5;
-      bpGroupSeconds = bpGroups.minutes * 60;
+      bpGroupSeconds = bpGroups[0].minutes * 60;
       bpRotationSeconds = rInput * 60;
 
       document.getElementById('bp-start-pause-btn').textContent = 'Start BP';
-      document.getElementById('bp-start-pause-btn').className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-5 py-1.5 rounded-lg shadow transition';
+      document.getElementById('bp-start-pause-btn').className = 'bg-amber-500 hover:bg-amber-400 text-purple-950 text-xs font-black px-5 py-1.5 rounded-lg shadow transition';
       const statusText = document.getElementById('bp-status-text');
       if(statusText) statusText.textContent = 'Ready';
       updateBPDisplay();
@@ -675,11 +850,11 @@
         clearInterval(timerInterval);
         isRunning = false;
         btn.textContent = 'Start';
-        btn.className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
+        btn.className = 'bg-amber-500 hover:bg-amber-400 text-purple-950 text-xs font-black px-4 py-1.5 rounded-lg shadow transition';
       } else {
         isRunning = true;
         btn.textContent = 'Pause';
-        btn.className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
+        btn.className = 'bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
         timerInterval = setInterval(() => {
           if (totalSeconds > 0) {
             totalSeconds--;
@@ -700,7 +875,7 @@
         isRunning = false;
         currentActiveIndex = 0;
         document.getElementById('start-pause-btn').textContent = 'Start';
-        document.getElementById('start-pause-btn').className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
+        document.getElementById('start-pause-btn').className = 'bg-amber-500 hover:bg-amber-400 text-purple-950 text-xs font-black px-4 py-1.5 rounded-lg shadow transition';
         alert('Practice Drill Series Completed!');
       } else {
         totalSeconds = customSegmentMins * 60;
@@ -714,7 +889,7 @@
       isRunning = false;
       totalSeconds = customSegmentMins * 60;
       document.getElementById('start-pause-btn').textContent = 'Start';
-      document.getElementById('start-pause-btn').className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition';
+      document.getElementById('start-pause-btn').className = 'bg-amber-500 hover:bg-amber-400 text-purple-950 text-xs font-black px-4 py-1.5 rounded-lg shadow transition';
       updateTimerDisplay();
     }
 
